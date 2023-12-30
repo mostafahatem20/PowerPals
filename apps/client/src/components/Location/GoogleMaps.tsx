@@ -212,6 +212,10 @@ const GoogleMaps = ({ setPlaceDetails }: IGoogleMaps) => {
       getOptionLabel={(option) =>
         typeof option === "string" ? option : option.description
       }
+      style={{
+        width: "100%",
+        maxWidth: "500px",
+      }}
       filterOptions={(x) => x}
       options={options}
       autoComplete

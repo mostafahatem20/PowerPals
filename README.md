@@ -7,3 +7,7 @@
 
 - npm run build
 - npm start
+
+# Docker Compose
+
+- docker-compose up -d --build
