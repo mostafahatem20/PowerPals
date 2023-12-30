@@ -12,7 +12,8 @@ import { useState } from "react"
 import FixedBottomNavigation from "../components/BottomNavigation/BottomNavigation"
 import Card from "../components/Card/Card"
 
-interface WikiDetails {
+export interface WikiDetails {
+  id?: number
   title: string
   subHeading: string
   body: string
@@ -21,12 +22,14 @@ interface WikiDetails {
 
 const articles: WikiDetails[] = [
   {
+    id: 1,
     title: "Tech Article 1",
     body: "Eu nunc ultrices laoreet enim vitae. Diam varius massa eleifend semper tortor, euismod scelerisque dolor. Sit tortor, nulla suspendisse in. Vitae lectus eu, id auctor feugiat aliquam sollicitudin neque, eu. Elementum nulla lectus varius ut pellentesque. Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque",
     subHeading: "Energy",
     tag: "Tech",
   },
   {
+    id: 2,
     title: "Tech Article 2",
     body: "Eu nunc ultrices laoreet enim vitae. Diam varius massa eleifend semper tortor, euismod scelerisque dolor. Sit tortor, nulla suspendisse in. Vitae lectus eu, id auctor feugiat aliquam sollicitudin neque, eu. Elementum nulla lectus varius ut pellentesque. Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque",
     subHeading: "Energy",
@@ -128,6 +131,7 @@ const Wiki = () => {
             {articles.map((article, index) => (
               <Grid key={index} item xs={12}>
                 <Card
+                  to={article.id ? `/wiki/article/${article.id}` : ""}
                   title={article.title}
                   tag={article.tag}
                   body={article.body}
@@ -138,10 +142,10 @@ const Wiki = () => {
         )}
         {value === 1 && (
           <>
-            {" "}
             {articles.map((article, index) => (
               <Grid key={index} item xs={12}>
                 <Card
+                  to={article.id ? `/wiki/news/${article.id}` : ""}
                   title={article.title}
                   tag={article.tag}
                   body={article.body}

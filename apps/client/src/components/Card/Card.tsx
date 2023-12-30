@@ -5,6 +5,7 @@ import CardMedia from "@mui/material/CardMedia"
 import Typography from "@mui/material/Typography"
 import Solar from "../../static/Solar.png"
 import ReadIcon from "../Icons/ReadIcon"
+import { useNavigate } from "react-router-dom"
 
 function calculateReadingTime(text: string, wordsPerMinute = 200) {
   // Count words in the text using regular expression
@@ -20,16 +21,24 @@ function calculateReadingTime(text: string, wordsPerMinute = 200) {
 }
 
 const Card = ({
+  to,
   title,
   tag,
   body,
 }: {
+  to?: string
   title: string
   body: string
   tag?: string
 }) => {
+  const navigate = useNavigate()
   return (
-    <MUICard sx={{ display: "flex", height: "75px", borderRadius: "15px" }}>
+    <MUICard
+      sx={{ display: "flex", height: "75px", borderRadius: "15px" }}
+      onClick={() => {
+        if (to) navigate(to)
+      }}
+    >
       <CardMedia
         component="img"
         sx={{ width: 80 }}
