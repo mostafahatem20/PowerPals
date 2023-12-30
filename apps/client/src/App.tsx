@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import Event from "./pages/Event"
 import Home from "./pages/Home"
 import Landing from "./pages/Landing"
 import Login from "./pages/Login"
@@ -20,16 +21,20 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
+    path: "/home",
+    element: <Home />,
+  },
+  {
     path: "/wiki",
     element: <Wiki />,
   },
   {
-    path: "/profile",
-    element: <Profile />,
+    path: "/event",
+    element: <Event />,
   },
   {
-    path: "/home",
-    element: <Home />,
+    path: "/profile",
+    element: <Profile />,
   },
 ])
 

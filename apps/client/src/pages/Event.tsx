@@ -1,11 +1,11 @@
 import FixedBottomNavigation from "../components/BottomNavigation/BottomNavigation"
 
-const Wiki = () => {
+const Event = () => {
   return (
     <>
-      <FixedBottomNavigation value={1} />
+      <FixedBottomNavigation value={2} />
     </>
   )
 }
 
-export default Wiki
+export default Event
