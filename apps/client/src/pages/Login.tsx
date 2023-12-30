@@ -3,14 +3,12 @@ import { Grid, Button, Typography, TextField, useTheme } from "@mui/material"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
+import { User } from "./Register"
 
 const Login = () => {
   const navigate = useNavigate()
   const theme = useTheme()
-  const [user, setUser] = useState({
-    password: "",
-    email: "",
-  })
+  const [user, setUser] = useState<User>({})
   const handleChange = (field: string, value: string) => {
     setUser({ ...user, [field]: value })
   }

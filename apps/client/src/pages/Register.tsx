@@ -13,22 +13,17 @@ import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
 import RegistrationConfirmation from "../components/Confirmation/RegistrationConfirmation"
 
+export interface User {
+  name?: string
+  type?: string
+  email?: string
+  password?: boolean
+}
 const Register = () => {
   const theme = useTheme()
   const navigate = useNavigate()
-  const [user, setUser] = useState({
-    type: "",
-    name: "",
-    email: "",
-    password: "",
-  })
+  const [user, setUser] = useState<User>({})
   const [success, setSuccess] = useState(false)
-  const handleChangeToggle = (
-    event: React.MouseEvent<HTMLElement>,
-    newType: string,
-  ) => {
-    setUser({ ...user, type: newType })
-  }
   const handleChange = (field: string, value: string) => {
     setUser({ ...user, [field]: value })
   }
@@ -94,7 +89,7 @@ const Register = () => {
                 color="primary"
                 value={user.type}
                 exclusive
-                onChange={handleChangeToggle}
+                onChange={(_, newType) => handleChange("type", newType)}
                 aria-label="User Type"
                 size="large"
               >
