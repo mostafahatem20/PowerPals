@@ -34,3 +34,9 @@ body {
   background-position: 0% 0%;
   background-size: 100% 100%;
 }
+
+.MuiBadge-badge {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 20px !important;
+}
