@@ -12,6 +12,11 @@ const theme = createTheme({
       textTransform: "uppercase",
       lineHeight: 1.5,
     },
+    subtitle2: {
+      color: "#000000",
+      fontWeight: "bold",
+      fontSize: 20,
+    },
     caption: {
       color: "#FFFFFF",
       fontWeight: "bold",

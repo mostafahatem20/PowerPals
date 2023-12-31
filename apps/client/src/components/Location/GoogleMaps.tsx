@@ -43,12 +43,12 @@ interface PlaceType {
 }
 
 export interface PlaceDetails {
-  street: string
-  number: number
-  postalCode: number
-  city: string
-  lat: number
-  lng: number
+  street?: string
+  number?: number
+  postalCode?: number
+  city?: string
+  lat?: number
+  lng?: number
 }
 
 interface IGoogleMaps {

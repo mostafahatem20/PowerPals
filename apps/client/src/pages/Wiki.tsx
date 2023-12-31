@@ -60,7 +60,13 @@ const Wiki = () => {
 
   return (
     <>
-      <Grid container rowSpacing={3} padding="5% 5%" marginBottom="80px">
+      <Grid
+        container
+        rowSpacing={3}
+        padding="5% 5%"
+        marginBottom="80px"
+        columnSpacing={1}
+      >
         <Grid item xs={12}>
           <Typography variant="subtitle1" color="primary.dark">
             Wiki
@@ -129,7 +135,7 @@ const Wiki = () => {
               />
             </Grid>
             {articles.map((article, index) => (
-              <Grid key={index} item xs={12}>
+              <Grid key={index} item lg={4} md={6} xs={12}>
                 <Card
                   to={article.id ? `/wiki/article/${article.id}` : ""}
                   title={article.title}
@@ -143,7 +149,7 @@ const Wiki = () => {
         {value === 1 && (
           <>
             {articles.map((article, index) => (
-              <Grid key={index} item xs={12}>
+              <Grid key={index} item lg={4} md={6} xs={12}>
                 <Card
                   to={article.id ? `/wiki/news/${article.id}` : ""}
                   title={article.title}
