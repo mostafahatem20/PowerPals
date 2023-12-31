@@ -14,6 +14,7 @@ import { Link } from "react-router-dom"
 import RegistrationConfirmation from "../components/Confirmation/RegistrationConfirmation"
 
 export interface User {
+  id?: number
   name?: string
   type?: string
   email?: string

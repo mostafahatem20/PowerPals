@@ -169,7 +169,11 @@ const GoogleMaps = ({ setPlaceDetails }: IGoogleMaps) => {
           if (
             status === (window as any).google.maps.places.PlacesServiceStatus.OK
           ) {
-            console.log(placeResult)
+            console.log(
+              placeResult,
+              placeResult.geometry.location.lat(),
+              placeResult.geometry.location.lng(),
+            )
             setPlaceDetails({
               lat: placeResult.geometry.location.lat(),
               lng: placeResult.geometry.location.lng(),

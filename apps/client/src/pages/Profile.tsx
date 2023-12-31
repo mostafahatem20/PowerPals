@@ -17,7 +17,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight"
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
 const Profile = () => {
   const [tab] = useState<"profile" | "address" | "profileInfo" | "help">(
-    "profile",
+    "address",
   )
 
   if (tab === "address") return <Address />
