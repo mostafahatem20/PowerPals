@@ -7,13 +7,20 @@ import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
 import { User } from "../../features/user/userSlice"
 
-const UsersList = ({ users }: { users: User[] }) => {
+const UsersList = ({
+  users,
+}: {
+  users: (User & { profileImage: string })[]
+}) => {
   return (
     <List sx={{ width: "100%", padding: 0 }}>
       {users.map((user, index) => (
         <ListItem key={index} alignItems="flex-start" disablePadding>
           <ListItemAvatar>
-            <Avatar alt={user.name} src="/static/images/avatar/1.jpg" />
+            <Avatar
+              alt={user.name}
+              src={`http://localhost:3000/files/${user.profileImage}`}
+            />
           </ListItemAvatar>
           <ListItemText
             primary={user.name}

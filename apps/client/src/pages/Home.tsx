@@ -1,20 +1,39 @@
-import { Divider, Grid, Typography, useTheme } from "@mui/material"
-import { useEffect } from "react"
+import { Divider, Grid, Typography, useTheme, Button } from "@mui/material"
+import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
 import FixedBottomNavigation from "../components/BottomNavigation/BottomNavigation"
 import VerticalLinearStepper from "../components/Stepper/Stepper"
 import UsersList from "../components/UsersList/UsersList"
 import { selectAuth } from "../features/auth/authSlice"
-import { getUserThunk, selectUser } from "../features/user/userSlice"
+import {
+  getUsersThunk,
+  getUserThunk,
+  selectUser,
+} from "../features/user/userSlice"
 
 const Home = () => {
   const theme = useTheme()
   const dispatch = useAppDispatch()
-  const { currentUser } = useAppSelector(selectUser)
+  const { currentUser, users } = useAppSelector(selectUser)
   const { id, name } = useAppSelector(selectAuth)
+  const [page, setPage] = useState(1)
+
+  const [canLoad, setCanLoad] = useState(true)
 
   useEffect(() => {
     if (id) dispatch(getUserThunk({ id }))
+    dispatch(
+      getUsersThunk({
+        page,
+        limit: 10,
+        byDistance: true,
+        callback: (l) => {
+          if (l < 10) {
+            setCanLoad(false)
+          }
+        },
+      }),
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
@@ -87,13 +106,49 @@ const Home = () => {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <UsersList
-            users={[
-              { name: "Mostafa123", email: "mostafahatem@gmail.com" },
-              { name: "Rostafa123", email: "rostafahatem@gmail.com" },
-            ]}
-          />
+          <UsersList users={users} />
         </Grid>
+        {canLoad && (
+          <Grid item xs={12}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                color: theme.palette.info.light,
+              }}
+            >
+              <Button
+                variant="outlined"
+                color="inherit"
+                style={{
+                  textTransform: "capitalize",
+                  borderRadius: "10px",
+                  padding: "10px 25px",
+                }}
+                onClick={() => {
+                  setPage(page + 1)
+                  dispatch(
+                    getUsersThunk({
+                      page: page + 1,
+                      limit: 10,
+                      byDistance: true,
+                      callback: (l) => {
+                        if (l < 10) {
+                          setCanLoad(false)
+                        }
+                      },
+                    }),
+                  )
+                }}
+              >
+                <Typography variant="body2" color="inherit">
+                  Mehr laden
+                </Typography>
+              </Button>
+            </div>
+          </Grid>
+        )}
       </Grid>
       <FixedBottomNavigation value={0} />
     </>

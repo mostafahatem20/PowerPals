@@ -38,7 +38,7 @@ export interface Address extends PlaceDetails {
 }
 
 export interface UserState {
-  users: User[]
+  users: (User & { profileImage: string })[]
   currentUser: User | null
   loading: boolean
   loadingUsers: boolean
@@ -53,9 +53,18 @@ const initialState: UserState = {
 
 export const getUsersThunk = createAsyncThunk(
   "user/getUsers",
-  async (query: { page: number; limit: number; byDistance: boolean }) => {
+  async ({
+    callback,
+    ...query
+  }: {
+    page: number
+    limit: number
+    byDistance: boolean
+    callback: (length: number) => void
+  }) => {
     try {
       const response = await getAllUsers(query)
+      callback(response.data.length)
       return response.data
     } catch (error: any) {
       const message = error.response.data.message
@@ -127,7 +136,12 @@ export const userSlice = createSlice({
       })
       .addCase(getUsersThunk.fulfilled, (state, action) => {
         state.loadingUsers = false
-        state.users.push(...action.payload)
+        const uniqueUserIds = new Set(state.users.map((user) => user.id))
+        const filteredPayload = action.payload.filter(
+          (user: User) => !uniqueUserIds.has(user.id),
+        )
+        // Adding unique users to the state
+        state.users.push(...filteredPayload)
       })
       .addCase(getUsersThunk.rejected, (state) => {
         state.loadingUsers = false
