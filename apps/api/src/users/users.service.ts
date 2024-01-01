@@ -72,7 +72,8 @@ export class UsersService {
 
     return this.userRepository
       .createQueryBuilder('u')
-      .select('u.id, u.name, u.email')
+      .leftJoinAndSelect('u.profile', 'up')
+      .select('u.id, u.name, u.email, up.profileImage')
       .where('u.id != :userId', { userId: found.id })
       .skip(skip) // Skip records based on pagination
       .take(limit) // Take a limited number of records per page

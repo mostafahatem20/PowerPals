@@ -8,6 +8,9 @@ import { DatabaseModule } from './database/database.module';
 import { UsersProfilesModule } from './users-profiles/users-profiles.module';
 import { RolesGuard } from './users/roles.guard';
 import { UsersModule } from './users/users.module';
+import { WikisModule } from './wikis/wikis.module';
+import { NewsStickersModule } from './news-stickers/news-stickers.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     DatabaseModule,
     UsersProfilesModule,
+    WikisModule,
+    NewsStickersModule,
+    EventsModule,
   ],
   providers: [
     {

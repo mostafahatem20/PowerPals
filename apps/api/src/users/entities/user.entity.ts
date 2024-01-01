@@ -1,12 +1,17 @@
+import { Event } from 'src/events/entities/event.entity';
+import { NewsSticker } from 'src/news-stickers/entities/news-sticker.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { UsersProfile } from '../../users-profiles/entities/users-profile.entity';
-
+import { Wiki } from '../../wikis/entities/wiki.entity';
 export enum UserType {
   USER = 'user',
   ORGANIZER = 'organizer',
@@ -39,4 +44,18 @@ export class User {
   })
   @JoinColumn()
   profile: UsersProfile;
+
+  @OneToMany(() => Wiki, (wiki) => wiki.user)
+  wikis: Wiki[];
+
+  @OneToMany(() => NewsSticker, (newsSticker) => newsSticker.user)
+  newsStickers: NewsSticker[];
+
+  @OneToMany(() => Event, (event) => event.createdBy)
+  events: Event[];
+
+  // Many Users can attend Many Events
+  @ManyToMany(() => Event, (event) => event.users)
+  @JoinTable()
+  eventsRegistration: Event[];
 }

@@ -25,7 +25,7 @@ export class UsersProfilesService {
     const skip = (page - 1) * limit; // Calculate the number of records to skip
     const usersWithinRadius = await this.usersProfileRepository
       .createQueryBuilder('up')
-      .select('u.id, u.name, u.email') // Adjust fields as needed
+      .select('u.id, u.name, u.email, up.profileImage') // Adjust fields as needed
       .innerJoin('up.user', 'u')
       .where(
         `ST_DWithin(

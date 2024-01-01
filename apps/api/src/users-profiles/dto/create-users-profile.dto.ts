@@ -6,6 +6,8 @@ import {
   IsNumber,
   IsNotEmpty,
   IsPhoneNumber,
+  IsLatitude,
+  IsLongitude,
 } from 'class-validator';
 import { UserProfileType } from '../entities/users-profile.entity';
 
@@ -13,10 +15,6 @@ export class CreateUsersProfileDto {
   @IsOptional()
   @IsPhoneNumber()
   telephoneNumber: string;
-
-  @IsOptional()
-  @IsString()
-  profileImage: string;
 
   @IsNotEmpty()
   @IsEnum(UserProfileType)
@@ -56,10 +54,12 @@ export class CreateUsersProfileDto {
 
   @IsOptional()
   @IsNumber()
+  @IsLatitude()
   lat: number;
 
   @IsOptional()
   @IsNumber()
+  @IsLongitude()
   lng: number;
 
   @IsOptional()
