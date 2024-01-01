@@ -4,9 +4,16 @@ import { UsersController } from './users.controller';
 import { DatabaseModule } from '../database/database.module';
 import { userProviders } from './users.providers';
 import { UsersProfilesModule } from 'src/users-profiles/users-profiles.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [DatabaseModule, UsersProfilesModule],
+  imports: [
+    DatabaseModule,
+    UsersProfilesModule,
+    MulterModule.register({
+      dest: './files',
+    }),
+  ],
   controllers: [UsersController],
   providers: [...userProviders, UsersService],
   exports: [UsersService],

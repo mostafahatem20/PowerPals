@@ -8,6 +8,9 @@ import {
   Delete,
   Request,
   Query,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipeBuilder,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,7 +18,10 @@ import { Public } from 'src/auth/auth.decorator';
 import { Role } from './roles.decorator';
 import { UserType } from './entities/user.entity';
 import { UpdateDto } from './dto/update.dto';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+import { diskStorage } from 'multer';
+import { editFileName } from 'src/utils/utils';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -44,14 +50,32 @@ export class UsersController {
     return this.usersService.findOne(+id, req.user);
   }
 
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files',
+        filename: editFileName,
+      }),
+    }),
+  )
   @Patch(':id')
   update(
     @Request() req,
     @Param('id') id: string,
     @Body()
     updateUserDto: UpdateDto,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: 'png|jpeg|jpg',
+        })
+        .build({
+          fileIsRequired: false,
+        }),
+    )
+    file?: Express.Multer.File,
   ) {
-    return this.usersService.update(+id, updateUserDto, req.user);
+    return this.usersService.update(+id, updateUserDto, file, req.user);
   }
 
   @Role(UserType.ORGANIZER)

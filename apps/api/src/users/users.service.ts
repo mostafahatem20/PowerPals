@@ -100,7 +100,12 @@ export class UsersService {
   findByEmail(email: string) {
     return this.userRepository.findOne({ where: { email } });
   }
-  async update(id: number, updateUserDto: UpdateDto, currentUser: User) {
+  async update(
+    id: number,
+    updateUserDto: UpdateDto,
+    file: Express.Multer.File,
+    currentUser: User,
+  ) {
     if (currentUser.type !== UserType.ORGANIZER && currentUser.id !== id) {
       throw new ForbiddenException('Forbidden resource');
     }
@@ -126,12 +131,14 @@ export class UsersService {
       if (password)
         found.password = await bcrypt.hash(password, jwtConstants.salt);
     }
-    if (profile) {
+    if (profile || file) {
       if (found.profile) {
         found.profile = { ...found.profile, ...profile };
+        if (file) found.profile.profileImage = file.filename;
       } else {
         const userProfile = this.usersProfileService.create(profile);
         found.profile = userProfile;
+        if (file) found.profile.profileImage = file.filename;
       }
     }
     await this.userRepository.save(found);
