@@ -11,7 +11,7 @@ import { MulterModule } from '@nestjs/platform-express';
     DatabaseModule,
     UsersProfilesModule,
     MulterModule.register({
-      dest: './files',
+      dest: '/files',
     }),
   ],
   controllers: [UsersController],

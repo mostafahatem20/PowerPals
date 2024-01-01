@@ -35,6 +35,9 @@ export class UsersProfile {
   electricityStorage: boolean;
 
   @Column({ nullable: true })
+  addressName: string;
+
+  @Column({ nullable: true })
   street: string;
 
   @Column({ nullable: true })
@@ -51,6 +54,12 @@ export class UsersProfile {
 
   @Column({ type: 'float', nullable: true })
   lng: number;
+
+  @Column({ nullable: true })
+  meterNumber: string;
+
+  @Column({ nullable: true })
+  networkProvider: string;
 
   @OneToOne(() => User, (user) => user.profile)
   user: User;

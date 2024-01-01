@@ -5,6 +5,7 @@ import StepLabel from "@mui/material/StepLabel"
 import StepContent from "@mui/material/StepContent"
 import Typography from "@mui/material/Typography"
 import StepIcon from "../Icons/StepIcon"
+import { useNavigate } from "react-router-dom"
 
 const steps = [
   {
@@ -30,12 +31,25 @@ const VerticalLinearStepper = ({
 }: {
   stepsStatus: [boolean, boolean, boolean, boolean]
 }) => {
+  const navigate = useNavigate()
   return (
     <Stepper orientation="vertical">
       {steps.map((step, index) => (
         <Step key={step.label} active={true}>
           <StepLabel
             StepIconComponent={() => <StepIcon done={stepsStatus[index]} />}
+            onClick={() => {
+              if (index === 0 && !stepsStatus[index]) {
+                navigate("/profile", {
+                  state: { from: "home", edit: "profileInfo" },
+                })
+              }
+              if (index === 1 && !stepsStatus[index] && stepsStatus[0]) {
+                navigate("/profile", {
+                  state: { from: "home", edit: "address" },
+                })
+              }
+            }}
           >
             <Typography variant="body1">{step.label}</Typography>
           </StepLabel>

@@ -3,9 +3,13 @@ import { Grid, Button, Typography, TextField, useTheme } from "@mui/material"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
-import { User } from "./Register"
+import { useAppDispatch } from "../app/hooks"
+import { loginThunk } from "../features/auth/authSlice"
+import { toast } from "react-toastify"
+import { User } from "../features/user/userSlice"
 
 const Login = () => {
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const theme = useTheme()
   const [user, setUser] = useState<User>({})
@@ -13,8 +17,17 @@ const Login = () => {
     setUser({ ...user, [field]: value })
   }
   const handleSubmit = () => {
-    console.log(user)
-    navigate("/home")
+    if (user.email && user.password) {
+      dispatch(
+        loginThunk({
+          email: user.email,
+          password: user.password,
+          callback: () => navigate("/home"),
+        }),
+      )
+    } else {
+      toast.error("Please fill all required fields!")
+    }
   }
   return (
     <Grid container rowSpacing={5} padding="5% 5%">

@@ -6,56 +6,109 @@ import {
   ToggleButton,
   Divider,
   useTheme,
+  IconButton,
 } from "@mui/material"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
+import { patchUserThunk, selectUser } from "../../features/user/userSlice"
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace"
+import { useAppSelector, useAppDispatch } from "../../app/hooks"
+import { selectAuth } from "../../features/auth/authSlice"
+import { toast } from "react-toastify"
 
-interface Profile {
-  number?: string
-  type?: string
-  solar?: boolean
-  electricityStorage?: boolean
-}
-const ProfileInformation = () => {
-  const [profile, setProfile] = useState<Profile>({})
+const ProfileInformation = ({ onBack }: { onBack: () => void }) => {
+  const { id } = useAppSelector(selectAuth)
+  const { currentUser } = useAppSelector(selectUser)
+  const dispatch = useAppDispatch()
+  const [profile, setProfile] = useState({
+    type: currentUser?.profile?.type,
+    size: currentUser?.profile?.size,
+    electricityStorage: currentUser?.profile?.electricityStorage,
+    solar: currentUser?.profile?.solar,
+  })
   const theme = useTheme()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleChange = (field: string, value: string) => {
     setProfile({ ...profile, [field]: value })
   }
 
   const handleSubmit = () => {
-    console.log(profile)
-    navigate("/home")
+    if (
+      id &&
+      profile.type &&
+      profile.size &&
+      profile.electricityStorage !== undefined &&
+      profile.solar !== undefined
+    ) {
+      dispatch(
+        patchUserThunk({
+          id,
+          body: {
+            profile: { ...profile },
+          },
+          isForm: false,
+          callback: () => {
+            if (
+              location.state?.from === "register" ||
+              location.state?.from === "home"
+            )
+              navigate("/home", { replace: true })
+            else onBack()
+          },
+        }),
+      )
+    } else {
+      toast.error("Please fill all required fields")
+    }
   }
   return (
     <Grid container rowSpacing={3} padding="5% 5%">
-      <Grid item xs={12}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            color: theme.palette.info.light,
-          }}
-        >
-          <Button
-            variant="outlined"
-            color="inherit"
+      {location.state?.from === "register" ? (
+        <Grid item xs={12}>
+          <div
             style={{
-              textTransform: "capitalize",
-              borderRadius: "10px",
-              padding: "10px 25px",
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              color: theme.palette.info.light,
             }}
-            onClick={() => navigate("/home")}
           >
-            <Typography variant="body2" color="inherit">
-              Überspringen
+            <Button
+              variant="outlined"
+              color="inherit"
+              style={{
+                textTransform: "capitalize",
+                borderRadius: "10px",
+                padding: "10px 25px",
+              }}
+              onClick={() => navigate("/home")}
+            >
+              <Typography variant="body2" color="inherit">
+                Überspringen
+              </Typography>
+            </Button>
+          </div>
+        </Grid>
+      ) : (
+        <Grid item xs={12}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              onClick={() =>
+                location.state?.from === "home"
+                  ? navigate("/home", { replace: true })
+                  : onBack()
+              }
+            >
+              <KeyboardBackspaceIcon color="info" />
+            </IconButton>
+            <Typography color="primary.dark" padding="0 10px" fontSize={16}>
+              {location.state?.from === "home" ? "Home" : "Zurück zum Profil"}
             </Typography>
-          </Button>
-        </div>
-      </Grid>
+          </div>
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Typography variant="subtitle1" color="primary.dark" textAlign="center">
           Profil Vervollständigen
@@ -121,9 +174,9 @@ const ProfileInformation = () => {
                 aria-label="User Type"
                 size="large"
               >
-                <ToggleButton value="PRIVAT">Privat</ToggleButton>
-                <ToggleButton value="GEWERBLICH">Gewerblich</ToggleButton>
-                <ToggleButton value="GEMEINDE">Gemeinde</ToggleButton>
+                <ToggleButton value="Privat">Privat</ToggleButton>
+                <ToggleButton value="Gewerblich">Gewerblich</ToggleButton>
+                <ToggleButton value="Gemeinde">Gemeinde</ToggleButton>
               </ToggleButtonGroup>
             </div>
           </div>
@@ -167,9 +220,9 @@ const ProfileInformation = () => {
             >
               <ToggleButtonGroup
                 color="primary"
-                value={profile.number}
+                value={profile.size}
                 exclusive
-                onChange={(_, newNumber) => handleChange("number", newNumber)}
+                onChange={(_, newNumber) => handleChange("size", newNumber)}
                 aria-label="User Type"
                 size="large"
               >

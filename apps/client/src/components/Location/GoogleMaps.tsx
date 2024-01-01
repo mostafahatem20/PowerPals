@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
 import parse from "autosuggest-highlight/parse"
 import { debounce } from "@mui/material/utils"
+import { PlaceDetails } from "../../features/user/userSlice"
 
 // This key was created specifically for the demo in mui.com.
 // You need to create a new one for your application.
@@ -40,15 +41,6 @@ interface PlaceType {
   place_id: string
   description: string
   structured_formatting: StructuredFormatting
-}
-
-export interface PlaceDetails {
-  street?: string
-  number?: number
-  postalCode?: number
-  city?: string
-  lat?: number
-  lng?: number
 }
 
 interface IGoogleMaps {
@@ -109,7 +101,9 @@ const GoogleMaps = ({ setPlaceDetails }: IGoogleMaps) => {
         component.types.includes("postal_code_prefix"),
     )
 
-    return postalCodeComponent ? postalCodeComponent.long_name : ""
+    return postalCodeComponent
+      ? Number(postalCodeComponent.long_name)
+      : undefined
   }
   const extractStreet = (addressComponents: any) => {
     if (!Array.isArray(addressComponents)) return ""
@@ -127,7 +121,9 @@ const GoogleMaps = ({ setPlaceDetails }: IGoogleMaps) => {
       component.types.includes("street_number"),
     )
 
-    return streetNumberComponent ? streetNumberComponent.long_name : ""
+    return streetNumberComponent
+      ? Number(streetNumberComponent.long_name)
+      : undefined
   }
   const extractCity = (addressComponents: any) => {
     if (!Array.isArray(addressComponents)) return ""
@@ -169,17 +165,16 @@ const GoogleMaps = ({ setPlaceDetails }: IGoogleMaps) => {
           if (
             status === (window as any).google.maps.places.PlacesServiceStatus.OK
           ) {
-            console.log(
-              placeResult,
-              placeResult.geometry.location.lat(),
-              placeResult.geometry.location.lng(),
-            )
             setPlaceDetails({
               lat: placeResult.geometry.location.lat(),
               lng: placeResult.geometry.location.lng(),
-              postalCode: extractPostalCode(placeResult.address_components),
+              postalCode: extractPostalCode(
+                placeResult.address_components,
+              ) as number,
               street: extractStreet(placeResult.address_components),
-              number: extractStreetNumber(placeResult.address_components),
+              number: extractStreetNumber(
+                placeResult.address_components,
+              ) as number,
               city: extractCity(placeResult.address_components),
             })
           }

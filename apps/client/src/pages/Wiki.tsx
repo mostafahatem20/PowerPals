@@ -9,8 +9,10 @@ import {
   Chip,
 } from "@mui/material"
 import { useState } from "react"
+import { useAppSelector } from "../app/hooks"
 import FixedBottomNavigation from "../components/BottomNavigation/BottomNavigation"
 import Card from "../components/Card/Card"
+import { selectAuth } from "../features/auth/authSlice"
 
 export interface WikiDetails {
   id?: number
@@ -39,6 +41,7 @@ const articles: WikiDetails[] = [
 
 const Wiki = () => {
   const theme = useTheme()
+  const { token } = useAppSelector(selectAuth)
   const [search, setSearch] = useState<string>()
   const [value, setValue] = useState<number>(0)
   const [tags, setTags] = useState<string[]>(["Alles"])
@@ -161,7 +164,7 @@ const Wiki = () => {
           </>
         )}
       </Grid>
-      <FixedBottomNavigation value={1} />
+      <FixedBottomNavigation value={token ? 1 : 0} />
     </>
   )
 }

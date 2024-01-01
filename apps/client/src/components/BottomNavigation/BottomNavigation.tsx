@@ -8,6 +8,8 @@ import WikiIcon from "../Icons/WikiIcon"
 import EventIcon from "../Icons/EventIcon"
 import ProfileIcon from "../Icons/ProfileIcon"
 import { useNavigate } from "react-router-dom"
+import { useAppSelector } from "../../app/hooks"
+import { selectAuth } from "../../features/auth/authSlice"
 
 const style = {
   borderRadius: "50%",
@@ -21,6 +23,50 @@ const style = {
 export default function FixedBottomNavigation({ value }: { value: number }) {
   const theme = useTheme()
   const navigate = useNavigate()
+  const { token } = useAppSelector(selectAuth)
+  if (token)
+    return (
+      <Paper
+        sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+        elevation={3}
+      >
+        <BottomNavigation
+          showLabels
+          value={value}
+          onChange={(event, newValue) => {
+            if (newValue === 0) navigate("/home")
+            if (newValue === 1) navigate("/wiki")
+            if (newValue === 2) navigate("/event")
+            if (newValue === 3) navigate("/profile")
+          }}
+          sx={{
+            ".MuiBottomNavigationAction-root": {
+              color: theme.palette.primary.dark,
+            },
+            "& .MuiBottomNavigationAction-root.Mui-selected": {
+              color: theme.palette.primary.dark,
+            },
+          }}
+        >
+          <BottomNavigationAction
+            label="Home"
+            icon={<HomeIcon style={style} active={value === 0} />}
+          />
+          <BottomNavigationAction
+            label="Wiki"
+            icon={<WikiIcon style={style} active={value === 1} />}
+          />
+          <BottomNavigationAction
+            label="Events"
+            icon={<EventIcon style={style} active={value === 2} />}
+          />
+          <BottomNavigationAction
+            label="Profile"
+            icon={<ProfileIcon style={style} active={value === 3} />}
+          />
+        </BottomNavigation>
+      </Paper>
+    )
 
   return (
     <Paper
@@ -31,10 +77,9 @@ export default function FixedBottomNavigation({ value }: { value: number }) {
         showLabels
         value={value}
         onChange={(event, newValue) => {
-          if (newValue === 0) navigate("/home")
-          if (newValue === 1) navigate("/wiki")
-          if (newValue === 2) navigate("/event")
-          if (newValue === 3) navigate("/profile")
+          if (newValue === 0) navigate("/wiki")
+          if (newValue === 1) navigate("/event")
+          if (newValue === 2) navigate("/login")
         }}
         sx={{
           ".MuiBottomNavigationAction-root": {
@@ -46,20 +91,16 @@ export default function FixedBottomNavigation({ value }: { value: number }) {
         }}
       >
         <BottomNavigationAction
-          label="Home"
-          icon={<HomeIcon style={style} active={value === 0} />}
-        />
-        <BottomNavigationAction
           label="Wiki"
-          icon={<WikiIcon style={style} active={value === 1} />}
+          icon={<WikiIcon style={style} active={value === 0} />}
         />
         <BottomNavigationAction
           label="Events"
-          icon={<EventIcon style={style} active={value === 2} />}
+          icon={<EventIcon style={style} active={value === 1} />}
         />
         <BottomNavigationAction
-          label="Profile"
-          icon={<ProfileIcon style={style} active={value === 3} />}
+          label="Login"
+          icon={<ProfileIcon style={style} active={value === 2} />}
         />
       </BottomNavigation>
     </Paper>

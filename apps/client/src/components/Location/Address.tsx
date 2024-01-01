@@ -6,31 +6,90 @@ import {
   Typography,
   useTheme,
   Button,
+  IconButton,
 } from "@mui/material"
-import GoogleMaps, { PlaceDetails } from "./GoogleMaps"
-import { useNavigate } from "react-router-dom"
+import GoogleMaps from "./GoogleMaps"
+import { useLocation, useNavigate } from "react-router-dom"
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { patchUserThunk, selectUser } from "../../features/user/userSlice"
+import { selectAuth } from "../../features/auth/authSlice"
+import { toast } from "react-toastify"
 
-interface Address {
-  name?: string
-  placeDetails?: PlaceDetails
-  meterNumber?: string
-  networkProvider?: string
-}
-const AddressInformation = () => {
+const AddressInformation = ({ onBack }: { onBack: () => void }) => {
+  const { id } = useAppSelector(selectAuth)
+  const { currentUser } = useAppSelector(selectUser)
+  const dispatch = useAppDispatch()
+  const location = useLocation()
   const navigate = useNavigate()
   const theme = useTheme()
-  const [address, setAddress] = useState<Address>({})
+  const [address, setAddress] = useState({
+    addressName: currentUser?.profile?.addressName,
+    street: currentUser?.profile?.street,
+    number: currentUser?.profile?.number,
+    postalCode: currentUser?.profile?.postalCode,
+    city: currentUser?.profile?.city,
+    lat: currentUser?.profile?.lat,
+    lng: currentUser?.profile?.lng,
+    meterNumber: currentUser?.profile?.meterNumber,
+    networkProvider: currentUser?.profile?.networkProvider,
+  })
   const handleChange = (field: string, value: string) => {
-    console.log(field, value)
     setAddress({ ...address, [field]: value })
   }
   const handleSubmit = () => {
-    console.log(address)
-    navigate("/home")
+    if (
+      id &&
+      address.addressName &&
+      address.street &&
+      address.number &&
+      address.postalCode &&
+      address.city &&
+      address.lat &&
+      address.lng &&
+      address.meterNumber &&
+      address.networkProvider
+    ) {
+      dispatch(
+        patchUserThunk({
+          id,
+          body: {
+            profile: { ...address },
+          },
+          isForm: false,
+          callback: () => {
+            if (
+              location.state?.from === "register" ||
+              location.state?.from === "home"
+            )
+              navigate("/home", { replace: true })
+            else onBack()
+          },
+        }),
+      )
+    } else {
+      toast.error("Please fill all required fields")
+    }
   }
 
   return (
     <Grid container rowSpacing={3} padding="5% 5%">
+      <Grid item xs={12}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <IconButton
+            onClick={() =>
+              location.state?.from === "home"
+                ? navigate("/home", { replace: true })
+                : onBack()
+            }
+          >
+            <KeyboardBackspaceIcon color="info" />
+          </IconButton>
+          <Typography color="primary.dark" padding="0 10px" fontSize={16}>
+            {location.state?.from === "home" ? "Home" : "Zurück zum Profil"}
+          </Typography>
+        </div>
+      </Grid>
       <Grid item xs={12}>
         <Typography variant="subtitle1" color="primary.dark" textAlign="center">
           Standort Anlegen
@@ -90,9 +149,9 @@ const AddressInformation = () => {
             focused
             fullWidth
             color="info"
-            value={address.name}
+            value={address.addressName}
             required
-            onChange={(e) => handleChange("name", e.target.value)}
+            onChange={(e) => handleChange("addressName", e.target.value)}
             InputProps={{
               style: {
                 color: theme.palette.info.light,
@@ -127,7 +186,7 @@ const AddressInformation = () => {
         >
           <GoogleMaps
             setPlaceDetails={(placeDetails) =>
-              setAddress({ ...address, placeDetails })
+              setAddress({ ...address, ...placeDetails })
             }
           />
         </div>
@@ -154,8 +213,8 @@ const AddressInformation = () => {
                 label="Straße"
                 fullWidth
                 color="info"
-                value={address.placeDetails?.street}
-                key={address.placeDetails?.street}
+                value={address.street}
+                key={address.street}
                 disabled
                 InputProps={{
                   style: {
@@ -170,8 +229,8 @@ const AddressInformation = () => {
                 label="Nr."
                 fullWidth
                 color="info"
-                value={address.placeDetails?.number}
-                key={address.placeDetails?.number}
+                value={address.number}
+                key={address.number}
                 disabled
                 InputProps={{
                   style: {
@@ -206,8 +265,8 @@ const AddressInformation = () => {
                 label="PLZ"
                 fullWidth
                 color="info"
-                value={address.placeDetails?.postalCode}
-                key={address.placeDetails?.postalCode}
+                value={address.postalCode}
+                key={address.postalCode}
                 disabled
                 InputProps={{
                   style: {
@@ -222,8 +281,8 @@ const AddressInformation = () => {
                 label="Ort"
                 fullWidth
                 color="info"
-                value={address.placeDetails?.city}
-                key={address.placeDetails?.city}
+                value={address.city}
+                key={address.city}
                 disabled
                 InputProps={{
                   style: {

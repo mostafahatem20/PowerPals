@@ -36,6 +36,10 @@ export class CreateUsersProfileDto {
 
   @IsOptional()
   @IsString()
+  addressName: string;
+
+  @IsOptional()
+  @IsString()
   street: string;
 
   @IsOptional()
@@ -57,4 +61,12 @@ export class CreateUsersProfileDto {
   @IsOptional()
   @IsNumber()
   lng: number;
+
+  @IsOptional()
+  @IsString()
+  meterNumber: string;
+
+  @IsOptional()
+  @IsString()
+  networkProvider: string;
 }

@@ -11,26 +11,47 @@ import {
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
+import { useAppDispatch, useAppSelector } from "../app/hooks"
 import RegistrationConfirmation from "../components/Confirmation/RegistrationConfirmation"
+import {
+  loginThunk,
+  registerThunk,
+  selectAuth,
+} from "../features/auth/authSlice"
+import { toast } from "react-toastify"
+import { User } from "../features/user/userSlice"
 
-export interface User {
-  id?: number
-  name?: string
-  type?: string
-  email?: string
-  password?: boolean
-}
 const Register = () => {
+  const dispatch = useAppDispatch()
   const theme = useTheme()
   const navigate = useNavigate()
+  const { loading } = useAppSelector(selectAuth)
   const [user, setUser] = useState<User>({})
   const [success, setSuccess] = useState(false)
   const handleChange = (field: string, value: string) => {
     setUser({ ...user, [field]: value })
   }
   const handleSubmit = () => {
-    console.log(user)
-    setSuccess(true)
+    if (user.type && user.name && user.password && user.email) {
+      dispatch(
+        registerThunk({
+          email: user.email,
+          name: user.name,
+          password: user.password,
+          type: user.type as "user" | "organizer",
+          callback: () =>
+            dispatch(
+              loginThunk({
+                email: user.email!,
+                password: user.password!,
+                callback: () => setSuccess(true),
+              }),
+            ),
+        }),
+      )
+    } else {
+      toast.error("Please fill all required fields!")
+    }
   }
   if (success) return <RegistrationConfirmation />
 
@@ -94,8 +115,8 @@ const Register = () => {
                 aria-label="User Type"
                 size="large"
               >
-                <ToggleButton value="USER">User</ToggleButton>
-                <ToggleButton value="ORGANIZER">Organizer</ToggleButton>
+                <ToggleButton value="user">User</ToggleButton>
+                <ToggleButton value="organizer">Organizer</ToggleButton>
               </ToggleButtonGroup>
             </div>
           </div>
@@ -223,7 +244,7 @@ const Register = () => {
               borderRadius: "15px",
             }}
             color="info"
-            onClick={handleSubmit}
+            onClick={loading ? () => {} : handleSubmit}
           >
             <Typography variant="body1" color="secondary">
               Registrieren

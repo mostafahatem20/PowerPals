@@ -3,8 +3,9 @@ import { useState } from "react"
 import FixedBottomNavigation from "../components/BottomNavigation/BottomNavigation"
 import PlaceIcon from "@mui/icons-material/Place"
 import EventCard from "../components/Card/EventCard"
-import { PlaceDetails } from "../components/Location/GoogleMaps"
-import { User } from "./Register"
+import { useAppSelector } from "../app/hooks"
+import { selectAuth } from "../features/auth/authSlice"
+import { PlaceDetails, User } from "../features/user/userSlice"
 
 export interface EventDetails {
   id?: number
@@ -44,7 +45,7 @@ const events: EventDetails[] = [
 
 const Event = () => {
   const theme = useTheme()
-
+  const { token } = useAppSelector(selectAuth)
   const [search, setSearch] = useState<string>()
 
   return (
@@ -100,7 +101,7 @@ const Event = () => {
         ))}
       </Grid>
 
-      <FixedBottomNavigation value={2} />
+      <FixedBottomNavigation value={token ? 2 : 1} />
     </>
   )
 }

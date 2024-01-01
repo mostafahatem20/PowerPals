@@ -8,6 +8,9 @@ import Profile from "./pages/Profile"
 import Register from "./pages/Register"
 import Wiki from "./pages/Wiki"
 import WikiDetails from "./pages/WikiDetails"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import ProtectedRoute from "./pages/ProtectedRoute"
 
 const router = createBrowserRouter([
   {
@@ -23,8 +26,17 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "/home",
-    element: <Home />,
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: "/home",
+        element: <Home />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+    ],
   },
   {
     path: "/wiki",
@@ -46,14 +58,26 @@ const router = createBrowserRouter([
     path: "/event/:id",
     element: <EventDetails />,
   },
-  {
-    path: "/profile",
-    element: <Profile />,
-  },
 ])
 
 const App = () => {
-  return <RouterProvider router={router} />
+  return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </>
+  )
 }
 
 export default App

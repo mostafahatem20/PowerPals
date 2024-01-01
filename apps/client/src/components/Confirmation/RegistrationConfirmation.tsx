@@ -45,7 +45,9 @@ const RegistrationConfirmation = () => {
               borderRadius: "15px",
             }}
             color="info"
-            onClick={() => navigate("/profile")}
+            onClick={() =>
+              navigate("/profile", { state: { from: "register" } })
+            }
           >
             <Typography variant="body1" color="secondary">
               Weiter Geht’s

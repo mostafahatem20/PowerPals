@@ -5,7 +5,7 @@ import ListItemText from "@mui/material/ListItemText"
 import ListItemAvatar from "@mui/material/ListItemAvatar"
 import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
-import { User } from "../../pages/Register"
+import { User } from "../../features/user/userSlice"
 
 const UsersList = ({ users }: { users: User[] }) => {
   return (
