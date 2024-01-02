@@ -7,59 +7,77 @@ import {
   Tabs,
   Tab,
   Chip,
+  CircularProgress,
+  Button,
 } from "@mui/material"
-import { useState } from "react"
-import { useAppSelector } from "../app/hooks"
+import { useEffect, useState } from "react"
+import { useAppDispatch, useAppSelector } from "../app/hooks"
 import FixedBottomNavigation from "../components/BottomNavigation/BottomNavigation"
 import Card from "../components/Card/Card"
 import { selectAuth } from "../features/auth/authSlice"
-
-export interface WikiDetails {
-  id?: number
-  title: string
-  subHeading: string
-  body: string
-  tag?: string
-}
-
-const articles: WikiDetails[] = [
-  {
-    id: 1,
-    title: "Tech Article 1",
-    body: "Eu nunc ultrices laoreet enim vitae. Diam varius massa eleifend semper tortor, euismod scelerisque dolor. Sit tortor, nulla suspendisse in. Vitae lectus eu, id auctor feugiat aliquam sollicitudin neque, eu. Elementum nulla lectus varius ut pellentesque. Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque",
-    subHeading: "Energy",
-    tag: "Tech",
-  },
-  {
-    id: 2,
-    title: "Tech Article 2",
-    body: "Eu nunc ultrices laoreet enim vitae. Diam varius massa eleifend semper tortor, euismod scelerisque dolor. Sit tortor, nulla suspendisse in. Vitae lectus eu, id auctor feugiat aliquam sollicitudin neque, eu. Elementum nulla lectus varius ut pellentesque. Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim, integer. Integer tristique venenatis sed pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra, vitae neque elementum natoque enim, porta pellentesque",
-    subHeading: "Energy",
-    tag: "Tech",
-  },
-]
+import {
+  deleteNewsStickerThunk,
+  getNewsStickersThunk,
+  selectNewsSticker,
+} from "../features/newsSticker/newsStickerSlice"
+import {
+  clearWikis,
+  deleteWikiThunk,
+  getWikisThunk,
+  selectWiki,
+} from "../features/wiki/wikiSlice"
+import AddIcon from "@mui/icons-material/Add"
+import { useNavigate } from "react-router-dom"
 
 const Wiki = () => {
   const theme = useTheme()
+  const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAuth)
+  const { loadingWikis, wikis } = useAppSelector(selectWiki)
+  const { loadingNewsStickers, newsStickers } =
+    useAppSelector(selectNewsSticker)
   const [search, setSearch] = useState<string>()
   const [value, setValue] = useState<number>(0)
-  const [tags, setTags] = useState<string[]>(["Alles"])
-
-  const addOrRemoveFromTags = (tag: string) => {
-    const newTags = [...tags]
-    const index = newTags.indexOf(tag) // Check if string exists in array
-
-    if (index !== -1) {
-      // If string exists, remove it
-      newTags.splice(index, 1)
+  const [tag, setTag] = useState<string>("Alles")
+  const [page, setPage] = useState(1)
+  const [canLoadWikis, setCanLoadWikis] = useState(true)
+  const [canLoadNewsStickers, setCanLoadNewsStickers] = useState(true)
+  const { type } = useAppSelector(selectAuth)
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (value === 0) {
+      dispatch(clearWikis())
+      setCanLoadWikis(true)
+      setPage(1)
+      dispatch(
+        getWikisThunk({
+          page: 1,
+          limit: 10,
+          tag: tag !== "Alles" ? tag : undefined,
+          callback: (l) => {
+            if (l < 10) {
+              setCanLoadWikis(false)
+            }
+          },
+        }),
+      )
     } else {
-      // If string doesn't exist, add it
-      newTags.push(tag)
+      setCanLoadNewsStickers(true)
+      setPage(1)
+      dispatch(
+        getNewsStickersThunk({
+          page: 1,
+          limit: 10,
+          callback: (l) => {
+            if (l < 10) {
+              setCanLoadNewsStickers(false)
+            }
+          },
+        }),
+      )
     }
-
-    setTags(newTags)
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, tag])
 
   return (
     <>
@@ -70,11 +88,42 @@ const Wiki = () => {
         marginBottom="80px"
         columnSpacing={1}
       >
-        <Grid item xs={12}>
-          <Typography variant="subtitle1" color="primary.dark">
-            Wiki
-          </Typography>
-        </Grid>
+        {type === "organizer" ? (
+          <Grid item xs={12}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="subtitle1" color="primary.dark">
+                Wiki
+              </Typography>
+              <Button
+                onClick={() => {
+                  if (value === 0) {
+                    navigate("/create-wiki")
+                  } else {
+                    navigate("/create-news-sticker")
+                  }
+                }}
+              >
+                <AddIcon color="primary" />
+                <Typography color="primary" padding="0 10px" fontSize={14}>
+                  Add
+                </Typography>
+              </Button>
+            </div>
+          </Grid>
+        ) : (
+          <Grid item xs={12}>
+            <Typography variant="subtitle1" color="primary.dark">
+              Wiki
+            </Typography>
+          </Grid>
+        )}
+
         <Grid item xs={12}>
           <Divider />
         </Grid>
@@ -115,52 +164,154 @@ const Wiki = () => {
               <Chip
                 label="Alles"
                 style={{ margin: "0px 5px" }}
-                variant={tags.includes("Alles") ? "filled" : "outlined"}
-                onClick={() => addOrRemoveFromTags("Alles")}
+                variant={tag === "Alles" ? "filled" : "outlined"}
+                onClick={() => setTag("Alles")}
               />
               <Chip
                 label="Shared Energy"
-                variant={tags.includes("Shared Energy") ? "filled" : "outlined"}
+                variant={tag === "Shared Energy" ? "filled" : "outlined"}
                 style={{ margin: "0px 5px" }}
-                onClick={() => addOrRemoveFromTags("Shared Energy")}
+                onClick={() => setTag("Shared Energy")}
               />
               <Chip
                 label="Tech"
-                variant={tags.includes("Tech") ? "filled" : "outlined"}
+                variant={tag === "Tech" ? "filled" : "outlined"}
                 style={{ margin: "0px 5px" }}
-                onClick={() => addOrRemoveFromTags("Tech")}
+                onClick={() => setTag("Tech")}
               />
               <Chip
                 label="Regulatorik"
-                variant={tags.includes("Regulatorik") ? "filled" : "outlined"}
+                variant={tag === "Regulatorik" ? "filled" : "outlined"}
                 style={{ margin: "0px 5px" }}
-                onClick={() => addOrRemoveFromTags("Regulatorik")}
+                onClick={() => setTag("Regulatorik")}
               />
             </Grid>
-            {articles.map((article, index) => (
-              <Grid key={index} item lg={4} md={6} xs={12}>
-                <Card
-                  to={article.id ? `/wiki/article/${article.id}` : ""}
-                  title={article.title}
-                  tag={article.tag}
-                  body={article.body}
-                />
-              </Grid>
-            ))}
+            {loadingWikis && wikis.length === 0 ? (
+              <CircularProgress color="info" />
+            ) : (
+              <>
+                {wikis.map((wiki, index) => (
+                  <Grid key={index} item lg={4} md={6} xs={12}>
+                    <Card
+                      to={wiki.id ? `/wiki/article/${wiki.id}` : ""}
+                      title={wiki.title!}
+                      tag={wiki.tag}
+                      body={wiki.body!}
+                      image={wiki.image}
+                      onDelete={() =>
+                        dispatch(deleteWikiThunk({ id: wiki.id! }))
+                      }
+                    />
+                  </Grid>
+                ))}
+                {canLoadWikis && (
+                  <Grid item xs={12}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        color: theme.palette.info.light,
+                      }}
+                    >
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        style={{
+                          textTransform: "capitalize",
+                          borderRadius: "10px",
+                          padding: "10px 25px",
+                        }}
+                        onClick={() => {
+                          setPage(page + 1)
+                          dispatch(
+                            getWikisThunk({
+                              page: page + 1,
+                              limit: 10,
+                              tag: tag !== "Alles" ? tag : undefined,
+                              callback: (l) => {
+                                if (l < 10) {
+                                  setCanLoadWikis(false)
+                                }
+                              },
+                            }),
+                          )
+                        }}
+                      >
+                        <Typography variant="body2" color="inherit">
+                          Mehr laden
+                        </Typography>
+                      </Button>
+                    </div>
+                  </Grid>
+                )}
+              </>
+            )}
           </>
         )}
         {value === 1 && (
           <>
-            {articles.map((article, index) => (
-              <Grid key={index} item lg={4} md={6} xs={12}>
-                <Card
-                  to={article.id ? `/wiki/news/${article.id}` : ""}
-                  title={article.title}
-                  tag={article.tag}
-                  body={article.body}
-                />
-              </Grid>
-            ))}
+            {loadingNewsStickers && newsStickers.length === 0 ? (
+              <CircularProgress color="info" />
+            ) : (
+              <>
+                {newsStickers.map((newsSticker, index) => (
+                  <Grid key={index} item lg={4} md={6} xs={12}>
+                    <Card
+                      to={newsSticker.id ? `/wiki/news/${newsSticker.id}` : ""}
+                      title={newsSticker.title!}
+                      body={newsSticker.body!}
+                      image={newsSticker.image}
+                      onDelete={() =>
+                        dispatch(
+                          deleteNewsStickerThunk({ id: newsSticker.id! }),
+                        )
+                      }
+                    />
+                  </Grid>
+                ))}
+                {canLoadNewsStickers && (
+                  <Grid item xs={12}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        color: theme.palette.info.light,
+                      }}
+                    >
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        style={{
+                          textTransform: "capitalize",
+                          borderRadius: "10px",
+                          padding: "10px 25px",
+                        }}
+                        onClick={() => {
+                          setPage(page + 1)
+                          dispatch(
+                            getNewsStickersThunk({
+                              page: page + 1,
+                              limit: 10,
+                              callback: (l) => {
+                                if (l < 10) {
+                                  setCanLoadNewsStickers(false)
+                                }
+                              },
+                            }),
+                          )
+                        }}
+                      >
+                        <Typography variant="body2" color="inherit">
+                          Mehr laden
+                        </Typography>
+                      </Button>
+                    </div>
+                  </Grid>
+                )}
+              </>
+            )}
           </>
         )}
       </Grid>

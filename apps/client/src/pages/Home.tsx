@@ -113,7 +113,7 @@ const Home = () => {
             <div
               style={{
                 display: "flex",
-                justifyContent: "flex-end",
+                justifyContent: "center",
                 alignItems: "center",
                 color: theme.palette.info.light,
               }}

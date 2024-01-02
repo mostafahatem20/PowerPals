@@ -1,4 +1,5 @@
 import { baseAxios } from "../../utils/axios"
+import { User } from "./userSlice"
 
 export interface GetUsers {
   page: number
@@ -7,7 +8,11 @@ export interface GetUsers {
 }
 export const getUser = (id: number) => baseAxios.get(`/users/${id}`)
 
-export const patchUser = (id: number, body: FormData, isForm?: boolean) =>
+export const patchUser = (
+  id: number,
+  body: FormData | User,
+  isForm?: boolean,
+) =>
   isForm
     ? baseAxios.patch(`/users/${id}`, body, {
         headers: {

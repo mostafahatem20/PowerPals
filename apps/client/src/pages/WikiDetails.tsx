@@ -1,67 +1,106 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace"
-import { Grid, IconButton, Typography } from "@mui/material"
-import { useNavigate } from "react-router-dom"
+import {
+  Backdrop,
+  CircularProgress,
+  Grid,
+  IconButton,
+  Typography,
+} from "@mui/material"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import {
+  selectNewsSticker,
+  getNewsStickerThunk,
+  NewsStickerDetails,
+} from "../features/newsSticker/newsStickerSlice"
+import { useAppDispatch, useAppSelector } from "../app/hooks"
+import {
+  selectWiki,
+  getWikiThunk,
+  WikiDetails,
+} from "../features/wiki/wikiSlice"
 
 const WikiDetailsComponent = () => {
+  const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
+  const [wiki, setWiki] = useState<WikiDetails | NewsStickerDetails>()
+  const newsStickerState = useAppSelector(selectNewsSticker)
+  const wikiState = useAppSelector(selectWiki)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    console.log(location.pathname)
+    if (
+      id &&
+      location.pathname === `/wiki/article/${id}` &&
+      (!wikiState.currentWiki || wikiState.currentWiki.id !== Number(id))
+    ) {
+      dispatch(
+        getWikiThunk({ id: Number(id), callBack: (data) => setWiki(data) }),
+      )
+    } else if (
+      id &&
+      location.pathname === `/wiki/news/${id}` &&
+      (!newsStickerState.currentNewsSticker ||
+        newsStickerState.currentNewsSticker.id !== Number(id))
+    ) {
+      dispatch(
+        getNewsStickerThunk({
+          id: Number(id),
+          callBack: (data) => setWiki(data),
+        }),
+      )
+    } else if (location.pathname === `/wiki/article/${id}`) {
+      setWiki({ ...wikiState.currentWiki })
+    } else {
+      setWiki({ ...newsStickerState.currentNewsSticker })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
+
   return (
-    <Grid container rowSpacing={3} padding="5% 5%">
-      <Grid item xs={12}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <IconButton onClick={() => navigate("/wiki")}>
-            <KeyboardBackspaceIcon color="info" />
-          </IconButton>
-          <Typography color="primary.dark" padding="0 10px" fontSize={16}>
-            Artikel 2
+    <>
+      {(wikiState.loading || newsStickerState.loading) && (
+        <Backdrop
+          sx={{ color: "#24345F", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={true}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
+      <Grid container rowSpacing={3} padding="5% 5%">
+        <Grid item xs={12}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <IconButton onClick={() => navigate("/wiki")}>
+              <KeyboardBackspaceIcon color="info" />
+            </IconButton>
+            <Typography color="primary.dark" padding="0 10px" fontSize={16}>
+              {wiki?.title}
+            </Typography>
+          </div>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container style={{ height: "21vh" }}>
+            <img
+              src={`http://localhost:3000/files/${wiki?.image}`}
+              alt="dsdf"
+              style={{ width: "100%", height: "100%" }}
+            />
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography color="primary.dark" fontSize={20}>
+            {wiki?.subHeading}
           </Typography>
-        </div>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography color="info.dark" fontSize={12} fontWeight="normal">
+            {wiki?.body}
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
-        <Grid container className="solar" style={{ height: "21vh" }} />
-      </Grid>
-      <Grid item xs={12}>
-        <Typography color="primary.dark" fontSize={20}>
-          Artikel description
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <Typography color="info.dark" fontSize={12} fontWeight="normal">
-          Eu nunc ultrices laoreet enim vitae. Diam varius massa eleifend semper
-          tortor, euismod scelerisque dolor. Sit tortor, nulla suspendisse in.
-          Vitae lectus eu, id auctor feugiat aliquam sollicitudin neque, eu.
-          Elementum nulla lectus varius ut pellentesque. Eu ultrices bibendum
-          lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus turpis enim,
-          integer. Integer tristique venenatis sed pellentesque et. Mauris
-          sapien, vestibulum ullamcorper ultrices nullam adipiscing in purus.
-          Fringilla lectus faucibus cursus nullam pulvinar. Commodo rhoncus,
-          porttitor velit condimentum. Suscipit pellentesque turpis nisl, donec
-          euismod volutpat non, pulvinar. Morbi adipiscing nunc lectus pulvinar
-          turpis quam erat turpis blandit. Imperdiet ullamcorper ut ultricies
-          massa vel at vitae pharetra. Vel nibh sit amet duis. Donec pharetra,
-          vitae neque elementum natoque enim, porta pellentesque Eu ultrices
-          bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit dapibus
-          turpis enim, integer. Integer tristique venenatis sed pellentesque et.
-          Mauris sapien, vestibulum ullamcorper ultrices nullam adipiscing in
-          purus. Fringilla lectus faucibus cursus nullam pulvinar. Commodo
-          rhoncus, porttitor velit condimentum. Suscipit pellentesque turpis
-          nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing nunc
-          lectus pulvinar turpis quam erat turpis blandit. Imperdiet ullamcorper
-          ut ultricies massa vel at vitae pharetra. Vel nibh sit amet duis.
-          Donec pharetra, vitae neque elementum natoque enim, porta pellentesque
-          Eu ultrices bibendum lacus, etiam. Metus, ut aliquam, posuere sed sit
-          dapibus turpis enim, integer. Integer tristique venenatis sed
-          pellentesque et. Mauris sapien, vestibulum ullamcorper ultrices nullam
-          adipiscing in purus. Fringilla lectus faucibus cursus nullam pulvinar.
-          Commodo rhoncus, porttitor velit condimentum. Suscipit pellentesque
-          turpis nisl, donec euismod volutpat non, pulvinar. Morbi adipiscing
-          nunc lectus pulvinar turpis quam erat turpis blandit. Imperdiet
-          ullamcorper ut ultricies massa vel at vitae pharetra. Vel nibh sit
-          amet duis. Donec pharetra, vitae neque elementum natoque enim, porta
-          pellentesque
-        </Typography>
-      </Grid>
-    </Grid>
+    </>
   )
 }
 

@@ -11,6 +11,7 @@ import WikiDetails from "./pages/WikiDetails"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import ProtectedRoute from "./pages/ProtectedRoute"
+import CreateWiki from "./pages/CreateWiki"
 
 const router = createBrowserRouter([
   {
@@ -36,12 +37,21 @@ const router = createBrowserRouter([
         path: "/profile",
         element: <Profile />,
       },
+      {
+        path: "/create-wiki",
+        element: <CreateWiki />,
+      },
+      {
+        path: "/create-news-sticker",
+        element: <CreateWiki />,
+      },
     ],
   },
   {
     path: "/wiki",
     element: <Wiki />,
   },
+
   {
     path: "/wiki/news/:id",
     element: <WikiDetails />,
