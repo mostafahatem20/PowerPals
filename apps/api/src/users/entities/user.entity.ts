@@ -36,7 +36,7 @@ export class User {
   })
   type: UserType;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @OneToOne(() => UsersProfile, (userProfile) => userProfile.user, {
@@ -56,6 +56,16 @@ export class User {
 
   // Many Users can attend Many Events
   @ManyToMany(() => Event, (event) => event.users)
-  @JoinTable()
+  @JoinTable({
+    name: 'users_events', // table name for the junction table of this relation
+    joinColumn: {
+      name: 'user',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'event',
+      referencedColumnName: 'id',
+    },
+  })
   eventsRegistration: Event[];
 }

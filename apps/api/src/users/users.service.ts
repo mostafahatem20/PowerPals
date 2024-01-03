@@ -8,12 +8,9 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserType } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { jwtConstants } from 'src/auth/constants';
-import { UpdateUsersProfileDto } from 'src/users-profiles/dto/update-users-profile.dto';
-import { UsersProfile } from 'src/users-profiles/entities/users-profile.entity';
 import { UsersProfilesService } from 'src/users-profiles/users-profiles.service';
 import { UpdateDto } from './dto/update.dto';
 
@@ -30,15 +27,29 @@ export class UsersService {
     private userRepository: Repository<User>,
     private readonly usersProfileService: UsersProfilesService,
   ) {}
-
+  async save(user: User) {
+    return await this.userRepository.save(user);
+  }
   async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
     const found = await this.findByEmail(createUserDto.email);
     if (found) {
-      throw new BadRequestException('A user with this email already exists');
+      if (found.password)
+        throw new BadRequestException('A user with this email already exists');
+      const user = {
+        ...found,
+        ...createUserDto,
+        password: createUserDto.password
+          ? await bcrypt.hash(createUserDto.password, jwtConstants.salt)
+          : null,
+      };
+      const { password, ...result } = await this.userRepository.save(user);
+      return result;
     }
     const user = {
       ...createUserDto,
-      password: await bcrypt.hash(createUserDto.password, jwtConstants.salt),
+      password: createUserDto.password
+        ? await bcrypt.hash(createUserDto.password, jwtConstants.salt)
+        : null,
     };
     const { password, ...result } = await this.userRepository.save(user);
     return result;
@@ -87,7 +98,7 @@ export class UsersService {
 
     const found = await this.userRepository.findOne({
       where: { id },
-      relations: ['profile'],
+      relations: ['profile', 'eventsRegistration'],
     });
 
     if (!found) {

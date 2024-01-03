@@ -30,3 +30,16 @@ export const createNewsSticker = (
         },
       })
     : baseAxios.post(`/news-stickers`, body)
+
+export const patchNewsSticker = (
+  id: number,
+  body: FormData | NewsStickerDetails,
+  isForm: boolean,
+) =>
+  isForm
+    ? baseAxios.post(`/news-stickers/${id}`, body, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Set content type to multipart/form-data
+        },
+      })
+    : baseAxios.post(`/news-stickers/${id}`, body)

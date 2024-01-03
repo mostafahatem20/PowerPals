@@ -10,6 +10,7 @@ import {
   UploadedFile,
   ParseFilePipeBuilder,
   Query,
+  Request,
 } from '@nestjs/common';
 import { NewsStickersService } from './news-stickers.service';
 import { CreateNewsStickerDto } from './dto/create-news-sticker.dto';
@@ -36,6 +37,7 @@ export class NewsStickersController {
   )
   @Post()
   create(
+    @Request() req,
     @Body() createNewsStickerDto: CreateNewsStickerDto,
     @UploadedFile(
       new ParseFilePipeBuilder()
@@ -48,7 +50,11 @@ export class NewsStickersController {
     )
     file?: Express.Multer.File,
   ) {
-    return this.newsStickersService.create(createNewsStickerDto, file);
+    return this.newsStickersService.create(
+      createNewsStickerDto,
+      file,
+      req.user,
+    );
   }
 
   @Public()

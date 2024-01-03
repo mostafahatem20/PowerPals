@@ -4,23 +4,24 @@ import CardContent from "@mui/material/CardContent"
 import CardMedia from "@mui/material/CardMedia"
 import Typography from "@mui/material/Typography"
 import { CardActionArea } from "@mui/material"
-import Solar from "../../static/Solar.png"
-import { EventDetails } from "../../pages/Event"
 import dayjs from "dayjs"
+import { EventDetails } from "../../features/event/eventSlice"
+import { useNavigate } from "react-router-dom"
 
 const EventCard = ({ event }: { event: EventDetails }) => {
-  const date = dayjs(event.date)
+  const navigate = useNavigate()
+  const date = dayjs(event.eventDateTime)
   // Set locale to German
   dayjs.locale("de")
   const formattedDate = date.format("dddd, D. MMMM [um] HH:mm")
   return (
-    <Card>
+    <Card onClick={() => navigate(`/event/${event.id}`)}>
       <CardActionArea>
         <CardMedia
           component="img"
           height="140"
-          image={Solar}
-          alt="green iguana"
+          src={`http://localhost:3000/files/${event.image}`}
+          alt={event.title}
         />
         <CardContent>
           <Typography variant="subtitle2">{event.title}</Typography>
@@ -28,7 +29,7 @@ const EventCard = ({ event }: { event: EventDetails }) => {
             {formattedDate}
           </Typography>
           <Typography variant="body1" fontSize={13}>
-            {`${event.location?.street} ${event.location?.number}`}
+            {`${event.street} ${event.number}`}
           </Typography>
           <Typography variant="subtitle2" fontSize={13}>
             {event.info}

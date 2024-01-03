@@ -30,7 +30,6 @@ const WikiDetailsComponent = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    console.log(location.pathname)
     if (
       id &&
       location.pathname === `/wiki/article/${id}` &&
@@ -81,7 +80,7 @@ const WikiDetailsComponent = () => {
           </div>
         </Grid>
         <Grid item xs={12}>
-          <Grid container style={{ height: "21vh" }}>
+          <Grid container style={{ height: "21vh", maxWidth: "500px" }}>
             <img
               src={`http://localhost:3000/files/${wiki?.image}`}
               alt="dsdf"

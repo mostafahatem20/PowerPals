@@ -27,3 +27,16 @@ export const createWiki = (body: FormData | WikiDetails, isForm: boolean) =>
         },
       })
     : baseAxios.post(`/wikis`, body)
+
+export const patchWiki = (
+  id: number,
+  body: FormData | WikiDetails,
+  isForm: boolean,
+) =>
+  isForm
+    ? baseAxios.patch(`/wikis/${id}`, body, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Set content type to multipart/form-data
+        },
+      })
+    : baseAxios.patch(`/wikis/${id}`, body)

@@ -10,6 +10,7 @@ import {
   UploadedFile,
   ParseFilePipeBuilder,
   Query,
+  Request,
 } from '@nestjs/common';
 import { WikisService } from './wikis.service';
 import { CreateWikiDto } from './dto/create-wiki.dto';
@@ -36,6 +37,7 @@ export class WikisController {
   )
   @Post()
   create(
+    @Request() req,
     @Body() createWikiDto: CreateWikiDto,
     @UploadedFile(
       new ParseFilePipeBuilder()
@@ -48,7 +50,7 @@ export class WikisController {
     )
     file?: Express.Multer.File,
   ) {
-    return this.wikisService.create(createWikiDto, file);
+    return this.wikisService.create(createWikiDto, file, req.user);
   }
 
   @Public()

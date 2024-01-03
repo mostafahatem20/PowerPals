@@ -50,7 +50,7 @@ const Register = () => {
         }),
       )
     } else {
-      toast.error("Please fill all required fields!")
+      toast.error("Please fill all required fields")
     }
   }
   if (success) return <RegistrationConfirmation />

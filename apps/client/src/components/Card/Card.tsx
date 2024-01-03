@@ -31,6 +31,7 @@ const Card = ({
   body,
   image,
   onDelete,
+  onEdit,
 }: {
   to?: string
   title: string
@@ -38,6 +39,7 @@ const Card = ({
   tag?: string
   image?: string
   onDelete: () => void
+  onEdit: () => void
 }) => {
   const navigate = useNavigate()
   const { type } = useAppSelector(selectAuth)
@@ -74,7 +76,7 @@ const Card = ({
                 {title}
               </Typography>
 
-              <Button>
+              <Button onClick={onEdit}>
                 <EditOutlinedIcon color="primary" />
                 <Typography color="primary" padding="0 5px" fontSize={14}>
                   Edit

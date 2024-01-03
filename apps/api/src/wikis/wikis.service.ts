@@ -3,16 +3,22 @@ import { CreateWikiDto } from './dto/create-wiki.dto';
 import { UpdateWikiDto } from './dto/update-wiki.dto';
 import { Wiki } from './entities/wiki.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 @Injectable()
 export class WikisService {
   constructor(
     @Inject('WIKIS_REPOSITORY')
     private wikiRepository: Repository<Wiki>,
   ) {}
-  async create(createWikiDto: CreateWikiDto, file: Express.Multer.File) {
+  async create(
+    createWikiDto: CreateWikiDto,
+    file: Express.Multer.File,
+    currentUser: User,
+  ) {
     return await this.wikiRepository.save({
       ...createWikiDto,
       image: file.filename || null,
+      user: currentUser,
     });
   }
 

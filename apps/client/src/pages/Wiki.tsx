@@ -187,7 +187,15 @@ const Wiki = () => {
               />
             </Grid>
             {loadingWikis && wikis.length === 0 ? (
-              <CircularProgress color="info" />
+              <Grid item xs={12}>
+                <CircularProgress color="info" />
+              </Grid>
+            ) : wikis.length === 0 ? (
+              <Grid item xs={12}>
+                <Typography variant="body1" color="info.dark">
+                  No Results Found
+                </Typography>
+              </Grid>
             ) : (
               <>
                 {wikis.map((wiki, index) => (
@@ -201,6 +209,7 @@ const Wiki = () => {
                       onDelete={() =>
                         dispatch(deleteWikiThunk({ id: wiki.id! }))
                       }
+                      onEdit={() => {}}
                     />
                   </Grid>
                 ))}
@@ -252,7 +261,15 @@ const Wiki = () => {
         {value === 1 && (
           <>
             {loadingNewsStickers && newsStickers.length === 0 ? (
-              <CircularProgress color="info" />
+              <Grid item xs={12}>
+                <CircularProgress color="info" />
+              </Grid>
+            ) : newsStickers.length === 0 ? (
+              <Grid item xs={12}>
+                <Typography variant="body1" color="info.dark">
+                  No Results Found
+                </Typography>
+              </Grid>
             ) : (
               <>
                 {newsStickers.map((newsSticker, index) => (
@@ -267,6 +284,7 @@ const Wiki = () => {
                           deleteNewsStickerThunk({ id: newsSticker.id! }),
                         )
                       }
+                      onEdit={() => {}}
                     />
                   </Grid>
                 ))}

@@ -4,6 +4,7 @@ import authReducer from "../features/auth/authSlice"
 import userReducer from "../features/user/userSlice"
 import wikiReducer from "../features/wiki/wikiSlice"
 import newsStickerReducer from "../features/newsSticker/newsStickerSlice"
+import eventReducer from "../features/event/eventSlice"
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     user: userReducer,
     wiki: wikiReducer,
     newsSticker: newsStickerReducer,
+    event: eventReducer,
   },
 })
 

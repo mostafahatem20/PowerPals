@@ -3,6 +3,7 @@ import { CreateNewsStickerDto } from './dto/create-news-sticker.dto';
 import { UpdateNewsStickerDto } from './dto/update-news-sticker.dto';
 import { Repository } from 'typeorm';
 import { NewsSticker } from './entities/news-sticker.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class NewsStickersService {
@@ -14,10 +15,12 @@ export class NewsStickersService {
   async create(
     createNewsStickerDto: CreateNewsStickerDto,
     file: Express.Multer.File,
+    currentUser: User,
   ) {
     return await this.newsStickerRepository.save({
       ...createNewsStickerDto,
       image: file.filename || null,
+      user: currentUser,
     });
   }
   findAll({ page, limit }: { page: number; limit: number }) {

@@ -83,7 +83,7 @@ const CreateWiki = () => {
         )
       }
     } else {
-      toast.error("Please fill all required fields!")
+      toast.error("Please fill all required fields")
     }
   }
   return (
@@ -99,23 +99,34 @@ const CreateWiki = () => {
         </div>
       </Grid>
       <Grid item xs={12}>
-        <Grid container style={{ height: "21vh" }}>
-          <img
-            src={url ? url : UploadWiki}
-            alt="upload placeholder"
-            style={{ width: "100%", height: "100%" }}
-            onClick={() => {
-              fileInputRef.current.click()!
-            }}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            style={{ display: "none" }}
-            onChange={handleChangeImage}
-          />
-        </Grid>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Grid
+            container
+            style={{ height: "21vh", width: "100%", maxWidth: "500px" }}
+          >
+            <img
+              src={url ? url : UploadWiki}
+              alt="upload placeholder"
+              style={{ width: "100%", height: "100%" }}
+              onClick={() => {
+                fileInputRef.current.click()!
+              }}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleChangeImage}
+            />
+          </Grid>
+        </div>
       </Grid>
       <Grid item xs={12}>
         <div

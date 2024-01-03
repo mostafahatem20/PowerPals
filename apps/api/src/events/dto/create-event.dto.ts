@@ -6,12 +6,14 @@ import {
   IsLatitude,
   IsLongitude,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateEventDto {
   @IsString()
   @IsNotEmpty()
   title: string;
 
+  @Transform(({ value }) => new Date(value))
   @IsDate()
   eventDateTime: Date;
 
@@ -19,9 +21,11 @@ export class CreateEventDto {
   @IsNotEmpty()
   street: string;
 
+  @Transform(({ value }) => Number(value))
   @IsNumber()
   number: number;
 
+  @Transform(({ value }) => Number(value))
   @IsNumber()
   postalCode: number;
 
@@ -29,11 +33,9 @@ export class CreateEventDto {
   @IsNotEmpty()
   city: string;
 
-  @IsNumber()
   @IsLatitude()
   lat: number;
 
-  @IsNumber()
   @IsLongitude()
   lng: number;
 

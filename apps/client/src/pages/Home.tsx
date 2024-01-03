@@ -18,24 +18,27 @@ const Home = () => {
   const { id, name } = useAppSelector(selectAuth)
   const [page, setPage] = useState(1)
 
-  const [canLoad, setCanLoad] = useState(true)
+  const [canLoad, setCanLoad] = useState(false)
 
   useEffect(() => {
-    if (id) dispatch(getUserThunk({ id }))
-    dispatch(
-      getUsersThunk({
-        page,
-        limit: 10,
-        byDistance: true,
-        callback: (l) => {
-          if (l < 10) {
-            setCanLoad(false)
-          }
-        },
-      }),
-    )
+    if (id && currentUser?.id !== id) dispatch(getUserThunk({ id }))
+    if (currentUser?.profile?.lat && currentUser.profile.lng) {
+      setCanLoad(true)
+      dispatch(
+        getUsersThunk({
+          page,
+          limit: 10,
+          byDistance: true,
+          callback: (l) => {
+            if (l < 10) {
+              setCanLoad(false)
+            }
+          },
+        }),
+      )
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [id, currentUser?.id])
 
   return (
     <>
@@ -100,11 +103,13 @@ const Home = () => {
         <Grid item xs={12}>
           <Divider />
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant="body1" color="info.dark">
-            PowerPals in deiner Umgebung
-          </Typography>
-        </Grid>
+        {users.length > 0 && (
+          <Grid item xs={12}>
+            <Typography variant="body1" color="info.dark">
+              PowerPals in deiner Umgebung
+            </Typography>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <UsersList users={users} />
         </Grid>

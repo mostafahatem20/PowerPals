@@ -1,53 +1,44 @@
-import { Grid, Typography, Divider, TextField, useTheme } from "@mui/material"
-import { useState } from "react"
+import {
+  Grid,
+  Typography,
+  Divider,
+  TextField,
+  useTheme,
+  Button,
+  CircularProgress,
+} from "@mui/material"
+import { useState, useEffect } from "react"
 import FixedBottomNavigation from "../components/BottomNavigation/BottomNavigation"
 import PlaceIcon from "@mui/icons-material/Place"
 import EventCard from "../components/Card/EventCard"
-import { useAppSelector } from "../app/hooks"
+import { useAppDispatch, useAppSelector } from "../app/hooks"
 import { selectAuth } from "../features/auth/authSlice"
-import { PlaceDetails, User } from "../features/user/userSlice"
-
-export interface EventDetails {
-  id?: number
-  title?: string
-  date?: Date
-  location?: PlaceDetails
-  user?: User
-  info?: string
-}
-
-const events: EventDetails[] = [
-  {
-    title: "Energieversammlung NP",
-    date: new Date(),
-    info: "Kostenlos",
-    location: { street: "Arcissstrasse", number: 73 },
-  },
-  {
-    title: "Energieversammlung NP",
-    date: new Date(),
-    info: "Kostenlos",
-    location: { street: "Arcissstrasse", number: 73 },
-  },
-  {
-    title: "Energieversammlung NP",
-    date: new Date(),
-    info: "Kostenlos",
-    location: { street: "Arcissstrasse", number: 73 },
-  },
-  {
-    title: "Energieversammlung NP",
-    date: new Date(),
-    info: "Kostenlos",
-    location: { street: "Arcissstrasse", number: 73 },
-  },
-]
-
+import { getEventsThunk, selectEvent } from "../features/event/eventSlice"
 const Event = () => {
   const theme = useTheme()
+  const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAuth)
+  const { loadingEvents, events } = useAppSelector(selectEvent)
   const [search, setSearch] = useState<string>()
+  const [page, setPage] = useState(1)
+  const [canLoad, setCanLoad] = useState(true)
 
+  useEffect(() => {
+    setCanLoad(true)
+    setPage(1)
+    dispatch(
+      getEventsThunk({
+        page: 1,
+        limit: 10,
+        callback: (l) => {
+          if (l < 10) {
+            setCanLoad(false)
+          }
+        },
+      }),
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <>
       <Grid
@@ -94,11 +85,63 @@ const Event = () => {
             </Typography>
           </div>
         </Grid>
-        {events.map((event, index) => (
-          <Grid key={index} item lg={4} md={6} xs={12}>
-            <EventCard event={event} />
+        {loadingEvents && events.length === 0 ? (
+          <Grid item xs={12}>
+            <CircularProgress color="info" />
           </Grid>
-        ))}
+        ) : events.length === 0 ? (
+          <Grid item xs={12}>
+            <Typography variant="body1" color="info.dark">
+              No Results Found
+            </Typography>
+          </Grid>
+        ) : (
+          events.map((event, index) => (
+            <Grid key={index} item lg={4} md={6} xs={12}>
+              <EventCard event={event} />
+            </Grid>
+          ))
+        )}
+        {canLoad && (
+          <Grid item xs={12}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: theme.palette.info.light,
+              }}
+            >
+              <Button
+                variant="outlined"
+                color="inherit"
+                style={{
+                  textTransform: "capitalize",
+                  borderRadius: "10px",
+                  padding: "10px 25px",
+                }}
+                onClick={() => {
+                  setPage(page + 1)
+                  dispatch(
+                    getEventsThunk({
+                      page: page + 1,
+                      limit: 10,
+                      callback: (l) => {
+                        if (l < 10) {
+                          setCanLoad(false)
+                        }
+                      },
+                    }),
+                  )
+                }}
+              >
+                <Typography variant="body2" color="inherit">
+                  Mehr laden
+                </Typography>
+              </Button>
+            </div>
+          </Grid>
+        )}
       </Grid>
 
       <FixedBottomNavigation value={token ? 2 : 1} />

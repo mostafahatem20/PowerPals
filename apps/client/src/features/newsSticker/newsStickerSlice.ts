@@ -5,6 +5,7 @@ import {
   deleteNewsSticker,
   getNewsSticker,
   getNewsStickers,
+  patchNewsSticker,
 } from "./newsStickerAPI"
 import { toast } from "react-toastify"
 
@@ -126,6 +127,36 @@ export const createNewsStickerThunk = createAsyncThunk(
     }
   },
 )
+
+export const patchNewsStickerThunk = createAsyncThunk(
+  "newsSticker/patchNewsSticker",
+  async ({
+    id,
+    body,
+    isForm,
+    callback,
+  }: {
+    id: number
+    body: FormData | NewsStickerDetails
+    isForm: boolean
+    callback?: () => void
+  }) => {
+    try {
+      const response = await patchNewsSticker(id, body, isForm)
+      if (callback) callback()
+      return response.data
+    } catch (error: any) {
+      const message = error.response.data.message
+      if (Array.isArray(message)) {
+        message.forEach((one) => toast.error(one))
+      } else {
+        toast.error(message)
+      }
+      throw error // Rethrow the error for handling in the rejected case
+    }
+  },
+)
+
 export const newsStickerSlice = createSlice({
   name: "newsSticker",
   initialState,
@@ -137,12 +168,12 @@ export const newsStickerSlice = createSlice({
       })
       .addCase(getNewsStickersThunk.fulfilled, (state, action) => {
         state.loadingNewsStickers = false
-        const uniqueUserIds = new Set(
+        const uniqueNewsStickersIds = new Set(
           state.newsStickers.map((newsSticker) => newsSticker.id),
         )
         const filteredPayload = action.payload.filter(
           (newsSticker: NewsStickerDetails) =>
-            !uniqueUserIds.has(newsSticker.id),
+            !uniqueNewsStickersIds.has(newsSticker.id),
         )
         // Adding unique newsStickers to the state
         state.newsStickers.push(...filteredPayload)
@@ -170,6 +201,17 @@ export const newsStickerSlice = createSlice({
         state.currentNewsSticker = action.payload
       })
       .addCase(createNewsStickerThunk.rejected, (state) => {
+        state.loading = false
+      })
+    builder
+      .addCase(patchNewsStickerThunk.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(patchNewsStickerThunk.fulfilled, (state, action) => {
+        state.loading = false
+        state.currentNewsSticker = action.payload
+      })
+      .addCase(patchNewsStickerThunk.rejected, (state) => {
         state.loading = false
       })
     builder

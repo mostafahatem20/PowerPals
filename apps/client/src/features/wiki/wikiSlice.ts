@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../../app/store"
-import { createWiki, deleteWiki, getWiki, getWikis } from "./wikiAPI"
+import { createWiki, deleteWiki, getWiki, getWikis, patchWiki } from "./wikiAPI"
 import { toast } from "react-toastify"
 
 export interface WikiDetails {
@@ -122,6 +122,35 @@ export const createWikiThunk = createAsyncThunk(
     }
   },
 )
+
+export const patchWikiThunk = createAsyncThunk(
+  "wiki/patchWiki",
+  async ({
+    id,
+    body,
+    isForm,
+    callback,
+  }: {
+    id: number
+    body: FormData | WikiDetails
+    isForm: boolean
+    callback?: () => void
+  }) => {
+    try {
+      const response = await patchWiki(id, body, isForm)
+      if (callback) callback()
+      return response.data
+    } catch (error: any) {
+      const message = error.response.data.message
+      if (Array.isArray(message)) {
+        message.forEach((one) => toast.error(one))
+      } else {
+        toast.error(message)
+      }
+      throw error // Rethrow the error for handling in the rejected case
+    }
+  },
+)
 export const wikiSlice = createSlice({
   name: "wiki",
   initialState,
@@ -167,6 +196,17 @@ export const wikiSlice = createSlice({
         state.currentWiki = action.payload
       })
       .addCase(createWikiThunk.rejected, (state) => {
+        state.loading = false
+      })
+    builder
+      .addCase(patchWikiThunk.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(patchWikiThunk.fulfilled, (state, action) => {
+        state.loading = false
+        state.currentWiki = action.payload
+      })
+      .addCase(patchWikiThunk.rejected, (state) => {
         state.loading = false
       })
     builder

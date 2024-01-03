@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import ProtectedRoute from "./pages/ProtectedRoute"
 import CreateWiki from "./pages/CreateWiki"
+import CreateEvent from "./pages/CreateEvent"
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: "/create-news-sticker",
         element: <CreateWiki />,
+      },
+      {
+        path: "/create-event",
+        element: <CreateEvent />,
       },
     ],
   },
