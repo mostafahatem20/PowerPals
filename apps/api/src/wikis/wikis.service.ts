@@ -22,13 +22,27 @@ export class WikisService {
     });
   }
 
-  findAll({ page, limit, tag }: { page: number; limit: number; tag: string }) {
+  findAll({
+    page,
+    limit,
+    tag,
+    searchTitle,
+  }: {
+    page: number;
+    limit: number;
+    tag: string;
+    searchTitle?: string;
+  }) {
     const skip = (page - 1) * limit; // Calculate the number of records to skip
     const query = this.wikiRepository.createQueryBuilder('w').select('w.*');
 
     if (tag) {
       query.where('w.tag = :tag', { tag }); // Filter records by the provided tag
     }
+    if (searchTitle)
+      query.andWhere(`LOWER(w.title) LIKE LOWER(:searchTerm)`, {
+        searchTerm: `%${searchTitle.toLowerCase()}%`,
+      }); // Case-insensitive title filter
 
     return query
       .skip(skip) // Skip records based on pagination

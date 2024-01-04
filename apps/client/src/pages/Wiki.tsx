@@ -16,6 +16,7 @@ import FixedBottomNavigation from "../components/BottomNavigation/BottomNavigati
 import Card from "../components/Card/Card"
 import { selectAuth } from "../features/auth/authSlice"
 import {
+  clearNewsStickers,
   deleteNewsStickerThunk,
   getNewsStickersThunk,
   selectNewsSticker,
@@ -59,15 +60,18 @@ const Wiki = () => {
               setCanLoadWikis(false)
             }
           },
+          searchTitle: search,
         }),
       )
     } else {
+      dispatch(clearNewsStickers())
       setCanLoadNewsStickers(true)
       setPage(1)
       dispatch(
         getNewsStickersThunk({
           page: 1,
           limit: 10,
+          searchTitle: search,
           callback: (l) => {
             if (l < 10) {
               setCanLoadNewsStickers(false)
@@ -77,7 +81,11 @@ const Wiki = () => {
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, tag])
+  }, [value, tag, search])
+
+  useEffect(() => {
+    setSearch("")
+  }, [value])
 
   return (
     <>

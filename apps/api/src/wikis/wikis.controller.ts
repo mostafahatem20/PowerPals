@@ -59,8 +59,9 @@ export class WikisController {
     @Query('page') page = 1,
     @Query('limit') limit = 10,
     @Query('tag') tag,
+    @Query('searchTitle') searchTitle,
   ) {
-    return this.wikisService.findAll({ page, limit, tag });
+    return this.wikisService.findAll({ page, limit, tag, searchTitle });
   }
 
   @Public()

@@ -4,13 +4,15 @@ import { EventDetails } from "./eventSlice"
 export interface GetEvents {
   page: number
   limit: number
+  searchTitle?: string
 }
 export const getEvent = (id: number) => baseAxios.get(`/events/${id}`)
 
-export const getEvents = ({ page, limit }: GetEvents) => {
+export const getEvents = ({ page, limit, searchTitle }: GetEvents) => {
   const queryParams = new URLSearchParams({
     page: String(page),
     limit: String(limit),
+    ...(searchTitle && { searchTitle }),
   })
   return baseAxios.get(`/events?${queryParams.toString()}`)
 }

@@ -34,6 +34,8 @@ const Event = () => {
       getEventsThunk({
         page: 1,
         limit: 10,
+        searchTitle: search,
+        clear: true,
         callback: (l) => {
           if (l < 10) {
             setCanLoad(false)
@@ -42,7 +44,7 @@ const Event = () => {
       }),
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [search])
   return (
     <>
       <Grid

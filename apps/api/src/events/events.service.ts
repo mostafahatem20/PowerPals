@@ -33,7 +33,11 @@ export class EventsService {
   }
 
   async findAll(
-    { page, limit }: { page: number; limit: number },
+    {
+      page,
+      limit,
+      searchTitle,
+    }: { page: number; limit: number; searchTitle?: string },
     currentUser: User,
   ) {
     const skip = (page - 1) * limit; // Calculate the number of records to skip
@@ -42,7 +46,7 @@ export class EventsService {
       const user = await this.usersService.findOne(currentUser.id, currentUser);
 
       if (user.profile?.lat && user.profile?.lng) {
-        return this.eventRepository
+        const query = this.eventRepository
           .createQueryBuilder('e')
           .select('e.*')
           .addSelect(
@@ -52,7 +56,13 @@ export class EventsService {
         )`,
             'distance',
           )
-          .where(`e.eventDateTime > :currentDate`, { currentDate: new Date() })
+          .where(`e.eventDateTime > :currentDate`, { currentDate: new Date() });
+        if (searchTitle)
+          query.andWhere(`LOWER(e.title) LIKE LOWER(:searchTerm)`, {
+            searchTerm: `%${searchTitle.toLowerCase()}%`,
+          }); // Case-insensitive title filter
+
+        return query
           .orderBy('distance', 'ASC')
           .setParameters({
             userLat: user.profile.lat,
@@ -64,10 +74,16 @@ export class EventsService {
       }
     }
 
-    return this.eventRepository
+    const query = this.eventRepository
       .createQueryBuilder('e')
       .select('e.*')
-      .where(`e.eventDateTime > :currentDate`, { currentDate: new Date() })
+      .where(`e.eventDateTime > :currentDate`, { currentDate: new Date() });
+    if (searchTitle)
+      query.andWhere(`LOWER(e.title) LIKE LOWER(:searchTerm)`, {
+        searchTerm: `%${searchTitle.toLowerCase()}%`,
+      }); // Case-insensitive title filter
+
+    return query
       .skip(skip) // Skip records based on pagination
       .take(limit) // Take a limited number of records per page
       .getRawMany();

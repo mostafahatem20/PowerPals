@@ -55,8 +55,13 @@ export class EventsController {
 
   @Public()
   @Get()
-  findAll(@Request() req, @Query('page') page = 1, @Query('limit') limit = 10) {
-    return this.eventsService.findAll({ page, limit }, req.user);
+  findAll(
+    @Request() req,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('searchTitle') searchTitle,
+  ) {
+    return this.eventsService.findAll({ page, limit, searchTitle }, req.user);
   }
 
   @Public()

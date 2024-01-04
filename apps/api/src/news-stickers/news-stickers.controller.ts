@@ -59,8 +59,12 @@ export class NewsStickersController {
 
   @Public()
   @Get()
-  findAll(@Query('page') page = 1, @Query('limit') limit = 10) {
-    return this.newsStickersService.findAll({ page, limit });
+  findAll(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('searchTitle') searchTitle,
+  ) {
+    return this.newsStickersService.findAll({ page, limit, searchTitle });
   }
 
   @Public()

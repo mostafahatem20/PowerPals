@@ -5,14 +5,16 @@ export interface GetWikis {
   page: number
   limit: number
   tag?: string
+  searchTitle?: string
 }
 export const getWiki = (id: number) => baseAxios.get(`/wikis/${id}`)
 
-export const getWikis = ({ page, limit, tag }: GetWikis) => {
+export const getWikis = ({ page, limit, tag, searchTitle }: GetWikis) => {
   const queryParams = new URLSearchParams({
     page: String(page),
     limit: String(limit),
     ...(tag && { tag }),
+    ...(searchTitle && { searchTitle }),
   })
   return baseAxios.get(`/wikis?${queryParams.toString()}`)
 }

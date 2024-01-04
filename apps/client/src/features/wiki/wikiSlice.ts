@@ -35,6 +35,7 @@ export const getWikisThunk = createAsyncThunk(
     page: number
     limit: number
     tag?: string
+    searchTitle?: string
     callback: (length: number) => void
   }) => {
     try {

@@ -38,16 +38,19 @@ export const getEventsThunk = createAsyncThunk(
   "event/getEvents",
   async ({
     callback,
+    clear,
     ...query
   }: {
     page: number
     limit: number
+    clear?: boolean
+    searchTitle?: string
     callback: (length: number) => void
   }) => {
     try {
       const response = await getEvents(query)
       callback(response.data.length)
-      return response.data
+      return { clear, events: response.data }
     } catch (error: any) {
       const message = error.response.data.message
       if (Array.isArray(message)) {
@@ -191,12 +194,16 @@ export const eventSlice = createSlice({
       })
       .addCase(getEventsThunk.fulfilled, (state, action) => {
         state.loadingEvents = false
-        const uniqueEventIds = new Set(state.events.map((event) => event.id))
-        const filteredPayload = action.payload.filter(
-          (event: EventDetails) => !uniqueEventIds.has(event.id),
-        )
-        // Adding unique events to the state
-        state.events.push(...filteredPayload)
+        if (!action.payload.clear) {
+          const uniqueEventIds = new Set(state.events.map((event) => event.id))
+          const filteredPayload = action.payload.events.filter(
+            (event: EventDetails) => !uniqueEventIds.has(event.id),
+          )
+          // Adding unique events to the state
+          state.events.push(...filteredPayload)
+        } else {
+          state.events = action.payload.events
+        }
       })
       .addCase(getEventsThunk.rejected, (state) => {
         state.loadingEvents = false

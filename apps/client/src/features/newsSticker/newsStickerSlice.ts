@@ -39,6 +39,7 @@ export const getNewsStickersThunk = createAsyncThunk(
   }: {
     page: number
     limit: number
+    searchTitle?: string
     callback: (length: number) => void
   }) => {
     try {
@@ -160,7 +161,11 @@ export const patchNewsStickerThunk = createAsyncThunk(
 export const newsStickerSlice = createSlice({
   name: "newsSticker",
   initialState,
-  reducers: {},
+  reducers: {
+    clearNewsStickers: (state) => {
+      state.newsStickers = []
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getNewsStickersThunk.pending, (state) => {
@@ -229,6 +234,7 @@ export const newsStickerSlice = createSlice({
       })
   },
 })
+export const { clearNewsStickers } = newsStickerSlice.actions
 
 export const selectNewsSticker = (state: RootState) => state.newsSticker
 

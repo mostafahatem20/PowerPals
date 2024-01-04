@@ -23,12 +23,25 @@ export class NewsStickersService {
       user: currentUser,
     });
   }
-  findAll({ page, limit }: { page: number; limit: number }) {
+  findAll({
+    page,
+    limit,
+    searchTitle,
+  }: {
+    page: number;
+    limit: number;
+    searchTitle?: string;
+  }) {
     const skip = (page - 1) * limit; // Calculate the number of records to skip
 
-    return this.newsStickerRepository
+    const query = this.newsStickerRepository
       .createQueryBuilder('n')
-      .select('n.*')
+      .select('n.*');
+    if (searchTitle)
+      query.andWhere(`LOWER(n.title) LIKE LOWER(:searchTerm)`, {
+        searchTerm: `%${searchTitle.toLowerCase()}%`,
+      }); // Case-insensitive title filter
+    return query
       .skip(skip) // Skip records based on pagination
       .take(limit) // Take a limited number of records per page
       .getRawMany();
