@@ -5,6 +5,7 @@ import {
   useTheme,
   TextField,
   Button,
+  Divider,
 } from "@mui/material"
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -165,6 +166,22 @@ const CreateWiki = () => {
             alignItems: "center",
           }}
         >
+          <Divider
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+            }}
+          />
+        </div>
+      </Grid>
+      <Grid item xs={12}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <TextField
             style={{
               width: "100%",
@@ -182,6 +199,22 @@ const CreateWiki = () => {
               style: {
                 color: theme.palette.info.light,
               },
+            }}
+          />
+        </div>
+      </Grid>
+      <Grid item xs={12}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Divider
+            style={{
+              width: "100%",
+              maxWidth: "500px",
             }}
           />
         </div>
@@ -217,35 +250,54 @@ const CreateWiki = () => {
           />
         </div>
       </Grid>
+
       {location.pathname === "/create-wiki" && (
-        <Grid item xs={12}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <TextField
+        <>
+          <Grid item xs={12}>
+            <div
               style={{
-                width: "100%",
-                maxWidth: "500px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              variant="outlined"
-              label="Tag"
-              focused
-              fullWidth
-              color="info"
-              value={(wiki as WikiDetails).tag}
-              onChange={(e) => handleChange("tag", e.target.value)}
-              InputProps={{
-                style: {
-                  color: theme.palette.info.light,
-                },
+            >
+              <Divider
+                style={{
+                  width: "100%",
+                  maxWidth: "500px",
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid item xs={12}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-            />
-          </div>
-        </Grid>
+            >
+              <TextField
+                style={{
+                  width: "100%",
+                  maxWidth: "500px",
+                }}
+                variant="outlined"
+                label="Tag"
+                focused
+                fullWidth
+                color="info"
+                value={(wiki as WikiDetails).tag}
+                onChange={(e) => handleChange("tag", e.target.value)}
+                InputProps={{
+                  style: {
+                    color: theme.palette.info.light,
+                  },
+                }}
+              />
+            </div>
+          </Grid>
+        </>
       )}
       <Grid item xs={12}>
         <div

@@ -185,6 +185,7 @@ const AddressInformation = ({ onBack }: { onBack: () => void }) => {
           }}
         >
           <GoogleMaps
+            label={"Ihren Standort"}
             setPlaceDetails={(placeDetails) =>
               setAddress({ ...address, ...placeDetails })
             }

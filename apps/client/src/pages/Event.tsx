@@ -14,10 +14,14 @@ import EventCard from "../components/Card/EventCard"
 import { useAppDispatch, useAppSelector } from "../app/hooks"
 import { selectAuth } from "../features/auth/authSlice"
 import { getEventsThunk, selectEvent } from "../features/event/eventSlice"
+import AddIcon from "@mui/icons-material/Add"
+import { useNavigate } from "react-router-dom"
+
 const Event = () => {
   const theme = useTheme()
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token } = useAppSelector(selectAuth)
+  const { token, type } = useAppSelector(selectAuth)
   const { loadingEvents, events } = useAppSelector(selectEvent)
   const [search, setSearch] = useState<string>()
   const [page, setPage] = useState(1)
@@ -56,6 +60,21 @@ const Event = () => {
         <Grid item xs={12}>
           <Divider />
         </Grid>
+        {type === "organizer" && (
+          <Grid item xs={12}>
+            {" "}
+            <Button
+              onClick={() => {
+                navigate("/create-event")
+              }}
+            >
+              <AddIcon color="primary" />
+              <Typography color="primary" padding="0 10px" fontSize={14}>
+                Add Event
+              </Typography>
+            </Button>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <TextField
             style={{

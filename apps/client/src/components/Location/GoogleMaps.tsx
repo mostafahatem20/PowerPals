@@ -45,8 +45,9 @@ interface PlaceType {
 
 interface IGoogleMaps {
   setPlaceDetails: (input: PlaceDetails) => void
+  label: string
 }
-const GoogleMaps = ({ setPlaceDetails }: IGoogleMaps) => {
+const GoogleMaps = ({ setPlaceDetails, label }: IGoogleMaps) => {
   const [value, setValue] = React.useState<PlaceType | null>(null)
   const [inputValue, setInputValue] = React.useState("")
   const [options, setOptions] = React.useState<readonly PlaceType[]>([])
@@ -234,7 +235,7 @@ const GoogleMaps = ({ setPlaceDetails }: IGoogleMaps) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Ihren Standort"
+          label={label}
           fullWidth
           focused
           color="info"
