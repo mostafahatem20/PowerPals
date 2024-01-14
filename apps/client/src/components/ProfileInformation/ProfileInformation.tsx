@@ -8,9 +8,13 @@ import {
   useTheme,
   IconButton,
 } from "@mui/material"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { patchUserThunk, selectUser } from "../../features/user/userSlice"
+import {
+  Profile,
+  patchUserThunk,
+  selectUser,
+} from "../../features/user/userSlice"
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace"
 import { useAppSelector, useAppDispatch } from "../../app/hooks"
 import { selectAuth } from "../../features/auth/authSlice"
@@ -20,12 +24,7 @@ const ProfileInformation = ({ onBack }: { onBack: () => void }) => {
   const { id } = useAppSelector(selectAuth)
   const { currentUser } = useAppSelector(selectUser)
   const dispatch = useAppDispatch()
-  const [profile, setProfile] = useState({
-    type: currentUser?.profile?.type,
-    size: currentUser?.profile?.size,
-    electricityStorage: currentUser?.profile?.electricityStorage,
-    solar: currentUser?.profile?.solar,
-  })
+  const [profile, setProfile] = useState<Profile>({})
   const theme = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
@@ -63,6 +62,18 @@ const ProfileInformation = ({ onBack }: { onBack: () => void }) => {
       toast.error("Please fill all required fields")
     }
   }
+
+  useEffect(() => {
+    if (currentUser) {
+      setProfile({
+        type: currentUser?.profile?.type,
+        size: currentUser?.profile?.size,
+        electricityStorage: currentUser?.profile?.electricityStorage,
+        solar: currentUser?.profile?.solar,
+      })
+    }
+  }, [JSON.stringify(currentUser)])
+
   return (
     <Grid container rowSpacing={3} padding="5% 5%">
       {location.state?.from === "register" ? (

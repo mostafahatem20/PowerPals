@@ -18,6 +18,7 @@ export interface EventDetails extends PlaceDetails {
   eventDateTime?: Date
   info?: string
   createdBy?: User
+  addressName?: string
 }
 
 export interface EventState {

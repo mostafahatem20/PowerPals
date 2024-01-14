@@ -22,7 +22,10 @@ const Login = () => {
         loginThunk({
           email: user.email,
           password: user.password,
-          callback: () => navigate("/home"),
+          callback: () => {
+            setUser({})
+            navigate("/home")
+          },
         }),
       )
     } else {

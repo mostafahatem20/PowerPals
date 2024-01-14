@@ -122,9 +122,7 @@ const GoogleMaps = ({ setPlaceDetails, label }: IGoogleMaps) => {
       component.types.includes("street_number"),
     )
 
-    return streetNumberComponent
-      ? Number(streetNumberComponent.long_name)
-      : undefined
+    return streetNumberComponent ? streetNumberComponent.long_name : undefined
   }
   const extractCity = (addressComponents: any) => {
     if (!Array.isArray(addressComponents)) return ""
@@ -173,9 +171,7 @@ const GoogleMaps = ({ setPlaceDetails, label }: IGoogleMaps) => {
                 placeResult.address_components,
               ) as number,
               street: extractStreet(placeResult.address_components),
-              number: extractStreetNumber(
-                placeResult.address_components,
-              ) as number,
+              number: extractStreetNumber(placeResult.address_components),
               city: extractCity(placeResult.address_components),
             })
           }

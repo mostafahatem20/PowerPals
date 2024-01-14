@@ -24,7 +24,7 @@ export interface Profile {
 }
 export interface PlaceDetails {
   street?: string
-  number?: number
+  number?: string
   postalCode?: number
   city?: string
   lat?: number
@@ -128,7 +128,11 @@ export const patchUserThunk = createAsyncThunk(
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    clearUsers: (state) => {
+      state.users = []
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUsersThunk.pending, (state) => {
@@ -170,6 +174,8 @@ export const userSlice = createSlice({
       })
   },
 })
+
+export const { clearUsers } = userSlice.actions
 
 export const selectUser = (state: RootState) => state.user
 

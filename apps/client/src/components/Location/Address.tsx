@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Divider,
   Grid,
@@ -71,6 +71,22 @@ const AddressInformation = ({ onBack }: { onBack: () => void }) => {
       toast.error("Please fill all required fields")
     }
   }
+
+  useEffect(() => {
+    if (currentUser) {
+      setAddress({
+        addressName: currentUser?.profile?.addressName,
+        street: currentUser?.profile?.street,
+        number: currentUser?.profile?.number,
+        postalCode: currentUser?.profile?.postalCode,
+        city: currentUser?.profile?.city,
+        lat: currentUser?.profile?.lat,
+        lng: currentUser?.profile?.lng,
+        meterNumber: currentUser?.profile?.meterNumber,
+        networkProvider: currentUser?.profile?.networkProvider,
+      })
+    }
+  }, [JSON.stringify(currentUser)])
 
   return (
     <Grid container rowSpacing={3} padding="5% 5%">

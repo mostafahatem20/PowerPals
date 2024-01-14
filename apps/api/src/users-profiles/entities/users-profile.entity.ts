@@ -41,7 +41,7 @@ export class UsersProfile {
   street: string;
 
   @Column({ nullable: true })
-  number: number;
+  number: string;
 
   @Column({ nullable: true })
   postalCode: number;
