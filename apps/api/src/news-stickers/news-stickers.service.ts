@@ -42,8 +42,8 @@ export class NewsStickersService {
         searchTerm: `%${searchTitle.toLowerCase()}%`,
       }); // Case-insensitive title filter
     return query
-      .skip(skip) // Skip records based on pagination
-      .take(limit) // Take a limited number of records per page
+      .offset(skip) // Skip records based on pagination
+      .limit(limit) // Take a limited number of records per page
       .getRawMany();
   }
 

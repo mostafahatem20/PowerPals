@@ -62,7 +62,7 @@ const AddressInformation = ({ onBack }: { onBack: () => void }) => {
               location.state?.from === "register" ||
               location.state?.from === "home"
             )
-              navigate("/home", { replace: true })
+              navigate("/home")
             else onBack()
           },
         }),
@@ -86,6 +86,7 @@ const AddressInformation = ({ onBack }: { onBack: () => void }) => {
         networkProvider: currentUser?.profile?.networkProvider,
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(currentUser)])
 
   return (
@@ -94,9 +95,7 @@ const AddressInformation = ({ onBack }: { onBack: () => void }) => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <IconButton
             onClick={() =>
-              location.state?.from === "home"
-                ? navigate("/home", { replace: true })
-                : onBack()
+              location.state?.from === "home" ? navigate("/home") : onBack()
             }
           >
             <KeyboardBackspaceIcon color="info" />

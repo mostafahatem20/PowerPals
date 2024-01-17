@@ -22,15 +22,16 @@ const Home = () => {
   const [canLoad, setCanLoad] = useState(false)
 
   useEffect(() => {
+    dispatch(clearUsers())
     if (id && currentUser?.id !== id) {
       dispatch(getUserThunk({ id }))
-      dispatch(clearUsers())
     }
     if (currentUser?.profile?.lat && currentUser.profile.lng) {
       setCanLoad(true)
+      setPage(1)
       dispatch(
         getUsersThunk({
-          page,
+          page: 1,
           limit: 10,
           byDistance: true,
           callback: (l) => {

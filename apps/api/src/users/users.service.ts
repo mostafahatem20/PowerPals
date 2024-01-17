@@ -81,14 +81,17 @@ export class UsersService {
     }
     const skip = (page - 1) * limit; // Calculate the number of records to skip
 
-    return this.userRepository
+    const result = await this.userRepository
       .createQueryBuilder('u')
       .leftJoinAndSelect('u.profile', 'up')
-      .select('u.id, u.name, u.email, up.profileImage')
+      .select('u.id, u.name, u.email, u.type, up.profileImage')
       .where('u.id != :userId', { userId: found.id })
-      .skip(skip) // Skip records based on pagination
-      .take(limit) // Take a limited number of records per page
+      .andWhere('u.type != :type', { type: 'organizer' })
+      .offset(skip) // Skip records based on pagination
+      .limit(limit) // Take a limited number of records per page
       .getRawMany();
+
+    return result;
   }
 
   async findOne(id: number, currentUser: User) {
@@ -138,6 +141,7 @@ export class UsersService {
           'You are not authorized to update user type',
         );
       }
+
       if (type) found.type = type;
       if (name) found.name = name;
       if (password)

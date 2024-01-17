@@ -110,9 +110,27 @@ export const patchUserThunk = createAsyncThunk(
     callback?: () => void
   }) => {
     try {
-      const response = await patchUser(id, body, isForm)
+      const { data } = await patchUser(id, body, isForm)
       if (callback) callback()
-      return response.data
+      return data
+    } catch (error: any) {
+      const message = error.response.data.message
+      if (Array.isArray(message)) {
+        message.forEach((one) => toast.error(one))
+      } else {
+        toast.error(message)
+      }
+      throw error // Rethrow the error for handling in the rejected case
+    }
+  },
+)
+
+export const patchOtherUserThunk = createAsyncThunk(
+  "user/patchOtherUser",
+  async ({ id, body, isForm }: { id: number; body: any; isForm: boolean }) => {
+    try {
+      const { data } = await patchUser(id, body, isForm)
+      return data
     } catch (error: any) {
       const message = error.response.data.message
       if (Array.isArray(message)) {
@@ -170,6 +188,23 @@ export const userSlice = createSlice({
         state.currentUser = action.payload
       })
       .addCase(patchUserThunk.rejected, (state) => {
+        state.loading = false
+      })
+    builder
+      .addCase(patchOtherUserThunk.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(patchOtherUserThunk.fulfilled, (state, action) => {
+        state.loading = false
+        const index = state.users.findIndex(
+          (user) => user.id === action.payload.id,
+        )
+        if (index !== -1) {
+          // Update the user object with the provided data
+          state.users[index] = { ...state.users[index], ...action.payload }
+        }
+      })
+      .addCase(patchOtherUserThunk.rejected, (state) => {
         state.loading = false
       })
   },
