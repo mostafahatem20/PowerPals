@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { Key, useEffect, useState } from "react"
 import {
   Grid,
   IconButton,
@@ -13,12 +13,15 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace"
 import HorizontalLinearStepper from "../components/Stepper/HorizontalStepper"
 import DownloadIcon from "@mui/icons-material/Download"
 import TestPDF from "../static/test.pdf"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import { Community, patchUserThunk } from "../features/user/userSlice"
+import { useAppDispatch, useAppSelector } from "../app/hooks"
+import { selectAuth } from "../features/auth/authSlice"
 
 const steps = [
   {
@@ -123,7 +126,11 @@ const steps = [
   },
 ]
 const CreateCommunity = () => {
-  const [step] = useState(1)
+  const location = useLocation()
+  const [step, setStep] = useState(0)
+  const [community, setCommunity] = useState<Community>({})
+  const dispatch = useAppDispatch()
+  const { id } = useAppSelector(selectAuth)
   const handleDownloadPDF = (path: string, name: string) => {
     // Create an anchor element
     const link = document.createElement("a")
@@ -145,6 +152,12 @@ const CreateCommunity = () => {
   }
 
   const navigate = useNavigate()
+  useEffect(() => {
+    if (location.state.community) {
+      setCommunity(location.state.community)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(location.state.community)])
   return (
     <Grid
       container
@@ -181,7 +194,7 @@ const CreateCommunity = () => {
           }}
         >
           <HorizontalLinearStepper
-            steps={[true, false, false, false, false, false]}
+            steps={Array.from({ length: 6 }, (_, index) => index <= step)}
           />
         </div>
       </Grid>
@@ -385,13 +398,27 @@ const CreateCommunity = () => {
       </Grid>
       <Grid item xs={12}>
         <FormGroup>
-          {steps[step].checkBoxs.map((one, index) => (
-            <FormControlLabel
-              key={index}
-              control={<Checkbox defaultChecked />}
-              label={one.label}
-            />
-          ))}
+          {steps[step].checkBoxs.map((one, index) => {
+            return (
+              <FormControlLabel
+                key={index}
+                control={
+                  <Checkbox
+                    key={community[one.field as keyof Community] as Key}
+                    checked={community[one.field as keyof Community] as boolean}
+                    onChange={(e) =>
+                      setCommunity({
+                        ...community,
+                        [one.field]: e.target.checked,
+                      })
+                    }
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label={one.label}
+              />
+            )
+          })}
         </FormGroup>
       </Grid>
 
@@ -411,10 +438,25 @@ const CreateCommunity = () => {
               borderRadius: "15px",
             }}
             color="info"
-            onClick={() => {}}
+            onClick={() => {
+              dispatch(
+                patchUserThunk({
+                  id: id!,
+                  body: {
+                    community,
+                  },
+                  isForm: false,
+                }),
+              )
+              if (step < 5) {
+                setStep(step + 1)
+              } else {
+                navigate("/community")
+              }
+            }}
           >
             <Typography variant="body1" color="secondary">
-              Speichern und Weiter
+              {step === 5 ? "Prozess Beenden" : "Speichern und Weiter"}
             </Typography>
           </Button>
           <div style={{ color: "#A9A9A9" }}>
@@ -427,7 +469,13 @@ const CreateCommunity = () => {
                 textTransform: "capitalize",
                 borderRadius: "15px",
               }}
-              onClick={() => {}}
+              onClick={() => {
+                if (step > 0) {
+                  setStep(step - 1)
+                } else {
+                  navigate("/community")
+                }
+              }}
             >
               <Typography variant="body1" color="inherit">
                 Zurück

@@ -1,3 +1,4 @@
+import { Community } from 'src/communities/entities/community.entity';
 import { Event } from 'src/events/entities/event.entity';
 import { NewsSticker } from 'src/news-stickers/entities/news-sticker.entity';
 import {
@@ -44,6 +45,10 @@ export class User {
   })
   @JoinColumn()
   profile: UsersProfile;
+
+  @OneToOne(() => Community, (community) => community.user)
+  @JoinColumn()
+  community: Community;
 
   @OneToMany(() => Wiki, (wiki) => wiki.user)
   wikis: Wiki[];

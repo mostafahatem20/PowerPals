@@ -15,6 +15,31 @@ export interface User {
     profileImage: string
   } & Profile &
     Address
+  community?: Community
+}
+
+export interface Community {
+  id?: number
+  Ziele?: boolean
+  Erzeugung?: boolean
+  Nahbereisabfrage?: boolean
+  Registrierung?: boolean
+  Statuten?: boolean
+  Vereinsbehörde?: boolean
+  Gründungsbescheid?: boolean
+  Vereinbarung_1?: boolean
+  Vereinbarung_2?: boolean
+  Regelungen?: boolean
+  ebutilities?: boolean
+  Marktpartner_ID?: boolean
+  Netzbetreiber?: boolean
+  Vertragsvorbereitung?: boolean
+  Vertragsfertigstellung?: boolean
+  EDA?: boolean
+  Angelegt?: boolean
+  Freigeschaltet?: boolean
+  Ausgestattet?: boolean
+  Zugestimmt?: boolean
 }
 export interface Profile {
   size?: string

@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { WikisModule } from './wikis/wikis.module';
 import { NewsStickersModule } from './news-stickers/news-stickers.module';
 import { EventsModule } from './events/events.module';
+import { CommunitiesModule } from './communities/communities.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { EventsModule } from './events/events.module';
     WikisModule,
     NewsStickersModule,
     EventsModule,
+    CommunitiesModule,
   ],
   providers: [
     {

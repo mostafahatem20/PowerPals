@@ -79,9 +79,9 @@ const Profile = () => {
     }
   }
   useEffect(() => {
-    if (id) dispatch(getUserThunk({ id }))
+    if (id && currentUser?.id !== id) dispatch(getUserThunk({ id }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [id, currentUser?.id])
 
   if (tab === "address") return <Address onBack={() => setTab("profile")} />
 

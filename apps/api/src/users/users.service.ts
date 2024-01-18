@@ -13,6 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { jwtConstants } from 'src/auth/constants';
 import { UsersProfilesService } from 'src/users-profiles/users-profiles.service';
 import { UpdateDto } from './dto/update.dto';
+import { CommunitiesService } from 'src/communities/communities.service';
 
 interface findAllQuery {
   page: number;
@@ -26,6 +27,7 @@ export class UsersService {
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<User>,
     private readonly usersProfileService: UsersProfilesService,
+    private readonly communitiesService: CommunitiesService,
   ) {}
   async save(user: User) {
     return await this.userRepository.save(user);
@@ -101,7 +103,7 @@ export class UsersService {
 
     const found = await this.userRepository.findOne({
       where: { id },
-      relations: ['profile', 'eventsRegistration'],
+      relations: ['profile', 'eventsRegistration', 'community'],
     });
 
     if (!found) {
@@ -126,13 +128,13 @@ export class UsersService {
     }
     const found = await this.userRepository.findOne({
       where: { id },
-      relations: ['profile'],
+      relations: ['profile', 'eventsRegistration', 'community'],
     });
 
     if (!found) {
       throw new NotFoundException('User not found');
     }
-    const { user, profile } = updateUserDto;
+    const { user, profile, community } = updateUserDto;
     if (user) {
       const { type, name, password } = user;
 
@@ -157,8 +159,17 @@ export class UsersService {
         if (file) found.profile.profileImage = file.filename;
       }
     }
+    if (community) {
+      if (found.community) {
+        found.community = { ...found.community, ...community };
+      } else {
+        const userCommunity = await this.communitiesService.create(community);
+        found.community = userCommunity;
+      }
+    }
     await this.userRepository.save(found);
-    return found;
+    const { password, ...result } = found;
+    return result;
   }
 
   async remove(id: number) {

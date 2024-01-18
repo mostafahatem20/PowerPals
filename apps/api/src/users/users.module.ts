@@ -5,6 +5,7 @@ import { DatabaseModule } from '../database/database.module';
 import { userProviders } from './users.providers';
 import { UsersProfilesModule } from 'src/users-profiles/users-profiles.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { CommunitiesModule } from 'src/communities/communities.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { MulterModule } from '@nestjs/platform-express';
     MulterModule.register({
       dest: '/files',
     }),
+    CommunitiesModule,
   ],
   controllers: [UsersController],
   providers: [...userProviders, UsersService],

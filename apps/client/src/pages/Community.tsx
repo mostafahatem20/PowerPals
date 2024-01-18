@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import FixedBottomNavigation from "../components/BottomNavigation/BottomNavigation"
 import {
   Divider,
@@ -8,14 +8,22 @@ import {
   Button,
   Stack,
 } from "@mui/material"
-import { useAppSelector } from "../app/hooks"
+import { useAppDispatch, useAppSelector } from "../app/hooks"
 import { selectAuth } from "../features/auth/authSlice"
 import { useNavigate } from "react-router-dom"
+import { selectUser, getUserThunk } from "../features/user/userSlice"
 
 const Community = () => {
   const theme = useTheme()
-  const { name } = useAppSelector(selectAuth)
+  const { name, id } = useAppSelector(selectAuth)
   const navigate = useNavigate()
+  const { currentUser } = useAppSelector(selectUser)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (id && currentUser?.id !== id) dispatch(getUserThunk({ id }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, currentUser?.id])
 
   return (
     <>
@@ -73,7 +81,34 @@ const Community = () => {
                 borderRadius: "15px",
               }}
               color="info"
-              onClick={() => navigate("/create-community")}
+              onClick={() =>
+                navigate("/create-community", {
+                  state: {
+                    community: {
+                      Ziele: false,
+                      Erzeugung: false,
+                      Nahbereisabfrage: false,
+                      Registrierung: false,
+                      Statuten: false,
+                      Vereinsbehörde: false,
+                      Gründungsbescheid: false,
+                      Vereinbarung_1: false,
+                      Vereinbarung_2: false,
+                      Regelungen: false,
+                      ebutilities: false,
+                      Marktpartner_ID: false,
+                      Netzbetreiber: false,
+                      Vertragsvorbereitung: false,
+                      Vertragsfertigstellung: false,
+                      EDA: false,
+                      Angelegt: false,
+                      Freigeschaltet: false,
+                      Ausgestattet: false,
+                      Zugestimmt: false,
+                    },
+                  },
+                })
+              }
             >
               <Typography variant="body1" color="secondary">
                 Energy Community Gründen
@@ -89,7 +124,34 @@ const Community = () => {
                   textTransform: "capitalize",
                   borderRadius: "15px",
                 }}
-                onClick={() => navigate("/create-community")}
+                onClick={() =>
+                  navigate("/create-community", {
+                    state: {
+                      community: currentUser?.community || {
+                        Ziele: false,
+                        Erzeugung: false,
+                        Nahbereisabfrage: false,
+                        Registrierung: false,
+                        Statuten: false,
+                        Vereinsbehörde: false,
+                        Gründungsbescheid: false,
+                        Vereinbarung_1: false,
+                        Vereinbarung_2: false,
+                        Regelungen: false,
+                        ebutilities: false,
+                        Marktpartner_ID: false,
+                        Netzbetreiber: false,
+                        Vertragsvorbereitung: false,
+                        Vertragsfertigstellung: false,
+                        EDA: false,
+                        Angelegt: false,
+                        Freigeschaltet: false,
+                        Ausgestattet: false,
+                        Zugestimmt: false,
+                      },
+                    },
+                  })
+                }
               >
                 <Typography variant="body1" color="inherit">
                   Fortsetzen
