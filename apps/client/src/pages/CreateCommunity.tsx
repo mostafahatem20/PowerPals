@@ -402,6 +402,7 @@ const CreateCommunity = () => {
             return (
               <FormControlLabel
                 key={index}
+                style={{ margin: "15px 0px" }}
                 control={
                   <Checkbox
                     key={community[one.field as keyof Community] as Key}
