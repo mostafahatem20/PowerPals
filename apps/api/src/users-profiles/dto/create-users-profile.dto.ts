@@ -41,8 +41,8 @@ export class CreateUsersProfileDto {
   street: string;
 
   @IsOptional()
-  @IsNumber()
-  number: number;
+  @IsString()
+  number: string;
 
   @IsOptional()
   @IsNumber()

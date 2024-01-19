@@ -44,7 +44,10 @@ const Register = () => {
               loginThunk({
                 email: user.email!,
                 password: user.password!,
-                callback: () => setSuccess(true),
+                callback: () => {
+                  setUser({})
+                  setSuccess(true)
+                },
               }),
             ),
         }),

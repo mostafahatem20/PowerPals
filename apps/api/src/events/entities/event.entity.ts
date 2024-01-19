@@ -22,10 +22,13 @@ export class Event {
   eventDateTime: Date;
 
   @Column()
+  addressName: string;
+
+  @Column()
   street: string;
 
   @Column()
-  number: number;
+  number: string;
 
   @Column()
   postalCode: number;

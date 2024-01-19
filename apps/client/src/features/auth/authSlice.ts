@@ -10,7 +10,7 @@ export interface AuthState {
   id?: number
   name?: string
   email?: string
-  type?: string
+  type?: "user" | "organizer" | "community_leader"
 }
 
 const initialState: AuthState = {

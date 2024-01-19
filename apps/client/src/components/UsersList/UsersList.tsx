@@ -6,11 +6,14 @@ import ListItemAvatar from "@mui/material/ListItemAvatar"
 import Avatar from "@mui/material/Avatar"
 import Typography from "@mui/material/Typography"
 import { User } from "../../features/user/userSlice"
+import { Switch } from "@mui/material"
 
 const UsersList = ({
   users,
+  action,
 }: {
   users: (User & { profileImage: string })[]
+  action?: (id: number, type: "user" | "organizer" | "community_leader") => void
 }) => {
   return (
     <List sx={{ width: "100%", padding: 0 }}>
@@ -38,6 +41,17 @@ const UsersList = ({
               </React.Fragment>
             }
           />
+          {action && (
+            <Switch
+              edge="end"
+              color="info"
+              onChange={() => action(user.id!, user.type!)}
+              checked={user.type === "community_leader"}
+              inputProps={{
+                "aria-labelledby": "switch-list-label-wifi",
+              }}
+            />
+          )}
         </ListItem>
       ))}
     </List>

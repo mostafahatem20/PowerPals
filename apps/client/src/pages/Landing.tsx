@@ -148,7 +148,7 @@ const Landing = () => {
   })
 
   return (
-    <Grid container style={{ height: "100vh" }}>
+    <Grid container style={{ height: "100vh", overflow: "hidden" }}>
       {carouselFragment}
     </Grid>
   )

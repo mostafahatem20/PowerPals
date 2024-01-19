@@ -13,6 +13,9 @@ import "react-toastify/dist/ReactToastify.css"
 import ProtectedRoute from "./pages/ProtectedRoute"
 import CreateWiki from "./pages/CreateWiki"
 import CreateEvent from "./pages/CreateEvent"
+import CreateCommunity from "./pages/CreateCommunity"
+import Users from "./pages/Users"
+import Community from "./pages/Community"
 
 const router = createBrowserRouter([
   {
@@ -49,6 +52,18 @@ const router = createBrowserRouter([
       {
         path: "/create-event",
         element: <CreateEvent />,
+      },
+      {
+        path: "/create-community",
+        element: <CreateCommunity />,
+      },
+      {
+        path: "/community",
+        element: <Community />,
+      },
+      {
+        path: "/users",
+        element: <Users />,
       },
     ],
   },

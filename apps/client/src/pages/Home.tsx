@@ -6,6 +6,7 @@ import VerticalLinearStepper from "../components/Stepper/Stepper"
 import UsersList from "../components/UsersList/UsersList"
 import { selectAuth } from "../features/auth/authSlice"
 import {
+  clearUsers,
   getUsersThunk,
   getUserThunk,
   selectUser,
@@ -21,12 +22,16 @@ const Home = () => {
   const [canLoad, setCanLoad] = useState(false)
 
   useEffect(() => {
-    if (id && currentUser?.id !== id) dispatch(getUserThunk({ id }))
+    dispatch(clearUsers())
+    if (id && currentUser?.id !== id) {
+      dispatch(getUserThunk({ id }))
+    }
     if (currentUser?.profile?.lat && currentUser.profile.lng) {
       setCanLoad(true)
+      setPage(1)
       dispatch(
         getUsersThunk({
-          page,
+          page: 1,
           limit: 10,
           byDistance: true,
           callback: (l) => {

@@ -62,6 +62,7 @@ const CreateEvent = () => {
       event.lat &&
       event.lng &&
       event.info &&
+      event.addressName &&
       !hasError
     ) {
       const currentDate = dayjs() // Get current datetime
@@ -79,6 +80,7 @@ const CreateEvent = () => {
       formData.append("title", event.title)
       formData.append("eventDateTime", event.eventDateTime.toISOString())
       formData.append("street", event.street)
+      formData.append("addressName", event.addressName)
       formData.append("number", String(event.number))
       formData.append("postalCode", String(event.postalCode))
       formData.append("city", event.city)
@@ -107,7 +109,8 @@ const CreateEvent = () => {
       !event.city ||
       !event.lat ||
       !event.lng ||
-      !event.info
+      !event.info ||
+      !event.addressName
     ) {
       toast.error("Please fill all required fields")
     }
@@ -248,6 +251,35 @@ const CreateEvent = () => {
             style={{
               width: "100%",
               maxWidth: "500px",
+            }}
+          />
+        </div>
+      </Grid>
+      <Grid item xs={12}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <TextField
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+            }}
+            variant="outlined"
+            label="Standortbezeichnung"
+            focused
+            fullWidth
+            color="info"
+            value={event.addressName}
+            required
+            onChange={(e) => handleChange("addressName", e.target.value)}
+            InputProps={{
+              style: {
+                color: theme.palette.info.light,
+              },
             }}
           />
         </div>

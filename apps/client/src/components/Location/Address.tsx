@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Divider,
   Grid,
@@ -62,7 +62,7 @@ const AddressInformation = ({ onBack }: { onBack: () => void }) => {
               location.state?.from === "register" ||
               location.state?.from === "home"
             )
-              navigate("/home", { replace: true })
+              navigate("/home")
             else onBack()
           },
         }),
@@ -72,15 +72,30 @@ const AddressInformation = ({ onBack }: { onBack: () => void }) => {
     }
   }
 
+  useEffect(() => {
+    if (currentUser) {
+      setAddress({
+        addressName: currentUser?.profile?.addressName,
+        street: currentUser?.profile?.street,
+        number: currentUser?.profile?.number,
+        postalCode: currentUser?.profile?.postalCode,
+        city: currentUser?.profile?.city,
+        lat: currentUser?.profile?.lat,
+        lng: currentUser?.profile?.lng,
+        meterNumber: currentUser?.profile?.meterNumber,
+        networkProvider: currentUser?.profile?.networkProvider,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(currentUser)])
+
   return (
     <Grid container rowSpacing={3} padding="5% 5%">
       <Grid item xs={12}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <IconButton
             onClick={() =>
-              location.state?.from === "home"
-                ? navigate("/home", { replace: true })
-                : onBack()
+              location.state?.from === "home" ? navigate("/home") : onBack()
             }
           >
             <KeyboardBackspaceIcon color="info" />

@@ -15,6 +15,31 @@ export interface User {
     profileImage: string
   } & Profile &
     Address
+  community?: Community
+}
+
+export interface Community {
+  id?: number
+  Ziele?: boolean
+  Erzeugung?: boolean
+  Nahbereisabfrage?: boolean
+  Registrierung?: boolean
+  Statuten?: boolean
+  Vereinsbehörde?: boolean
+  Gründungsbescheid?: boolean
+  Vereinbarung_1?: boolean
+  Vereinbarung_2?: boolean
+  Regelungen?: boolean
+  ebutilities?: boolean
+  Marktpartner_ID?: boolean
+  Netzbetreiber?: boolean
+  Vertragsvorbereitung?: boolean
+  Vertragsfertigstellung?: boolean
+  EDA?: boolean
+  Angelegt?: boolean
+  Freigeschaltet?: boolean
+  Ausgestattet?: boolean
+  Zugestimmt?: boolean
 }
 export interface Profile {
   size?: string
@@ -24,7 +49,7 @@ export interface Profile {
 }
 export interface PlaceDetails {
   street?: string
-  number?: number
+  number?: string
   postalCode?: number
   city?: string
   lat?: number
@@ -110,9 +135,27 @@ export const patchUserThunk = createAsyncThunk(
     callback?: () => void
   }) => {
     try {
-      const response = await patchUser(id, body, isForm)
+      const { data } = await patchUser(id, body, isForm)
       if (callback) callback()
-      return response.data
+      return data
+    } catch (error: any) {
+      const message = error.response.data.message
+      if (Array.isArray(message)) {
+        message.forEach((one) => toast.error(one))
+      } else {
+        toast.error(message)
+      }
+      throw error // Rethrow the error for handling in the rejected case
+    }
+  },
+)
+
+export const patchOtherUserThunk = createAsyncThunk(
+  "user/patchOtherUser",
+  async ({ id, body, isForm }: { id: number; body: any; isForm: boolean }) => {
+    try {
+      const { data } = await patchUser(id, body, isForm)
+      return data
     } catch (error: any) {
       const message = error.response.data.message
       if (Array.isArray(message)) {
@@ -128,7 +171,11 @@ export const patchUserThunk = createAsyncThunk(
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    clearUsers: (state) => {
+      state.users = []
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUsersThunk.pending, (state) => {
@@ -168,8 +215,27 @@ export const userSlice = createSlice({
       .addCase(patchUserThunk.rejected, (state) => {
         state.loading = false
       })
+    builder
+      .addCase(patchOtherUserThunk.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(patchOtherUserThunk.fulfilled, (state, action) => {
+        state.loading = false
+        const index = state.users.findIndex(
+          (user) => user.id === action.payload.id,
+        )
+        if (index !== -1) {
+          // Update the user object with the provided data
+          state.users[index] = { ...state.users[index], ...action.payload }
+        }
+      })
+      .addCase(patchOtherUserThunk.rejected, (state) => {
+        state.loading = false
+      })
   },
 })
+
+export const { clearUsers } = userSlice.actions
 
 export const selectUser = (state: RootState) => state.user
 

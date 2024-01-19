@@ -111,7 +111,7 @@ const EventDetails = () => {
             </Grid>
             <Grid item xs={10}>
               <Typography variant="body1" color="info.dark" fontSize={16}>
-                Hörsaal 1
+                {currentEvent?.addressName}
               </Typography>
               <Typography variant="body1" fontSize={12}>
                 {`${currentEvent?.street} ${currentEvent?.number}, ${currentEvent?.postalCode} ${currentEvent?.city}`}

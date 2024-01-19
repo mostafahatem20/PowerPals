@@ -19,11 +19,15 @@ export class CreateEventDto {
 
   @IsString()
   @IsNotEmpty()
+  addressName: string;
+
+  @IsString()
+  @IsNotEmpty()
   street: string;
 
-  @Transform(({ value }) => Number(value))
-  @IsNumber()
-  number: number;
+  @IsString()
+  @IsNotEmpty()
+  number: string;
 
   @Transform(({ value }) => Number(value))
   @IsNumber()

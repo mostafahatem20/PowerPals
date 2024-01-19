@@ -29,7 +29,7 @@ import SupportCenter from "../components/SupportCenter/SupportCenter"
 import { toast } from "react-toastify"
 const Profile = () => {
   const { currentUser } = useAppSelector(selectUser)
-  const { id } = useAppSelector(selectAuth)
+  const { id, type } = useAppSelector(selectAuth)
   const dispatch = useAppDispatch()
   const fileInputRef = useRef<any>(null)
   const theme = useTheme()
@@ -79,9 +79,9 @@ const Profile = () => {
     }
   }
   useEffect(() => {
-    if (id) dispatch(getUserThunk({ id }))
+    if (id && currentUser?.id !== id) dispatch(getUserThunk({ id }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [id, currentUser?.id])
 
   if (tab === "address") return <Address onBack={() => setTab("profile")} />
 
@@ -501,7 +501,7 @@ const Profile = () => {
           </div>
         </Grid>
       </Grid>
-      <FixedBottomNavigation value={3} />
+      <FixedBottomNavigation value={type === "user" ? 3 : 4} />
     </>
   )
 }
