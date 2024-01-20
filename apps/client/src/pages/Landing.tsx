@@ -9,8 +9,17 @@ interface IItem {
   backgroundColor: "primary" | "secondary"
   item: string
   slideToItem: (item: string) => void
+  title: string
+  subtitle: string
 }
-const Item = ({ className, backgroundColor, item, slideToItem }: IItem) => {
+const Item = ({
+  className,
+  backgroundColor,
+  item,
+  slideToItem,
+  title,
+  subtitle,
+}: IItem) => {
   const theme = useTheme()
   const navigate = useNavigate()
 
@@ -29,14 +38,14 @@ const Item = ({ className, backgroundColor, item, slideToItem }: IItem) => {
       >
         <Grid item xs={12} style={{ height: "40%" }}>
           <Typography variant="subtitle1" style={{ padding: "5% 8%" }}>
-            Energiewende Leichtgemacht
+            {title}
           </Typography>
           <Typography
             variant="body1"
             style={{ padding: "0% 8%" }}
             color="secondary"
           >
-            Lorem Ipsum
+            {subtitle}
           </Typography>
         </Grid>
 
@@ -119,6 +128,8 @@ const Landing = () => {
             backgroundColor="primary"
             item="item-1"
             slideToItem={slide}
+            title={"Energiewende Leichtgemacht"}
+            subtitle={"Lorem Ipsum"}
           />
         ),
       },
@@ -130,6 +141,8 @@ const Landing = () => {
             backgroundColor="secondary"
             item="item-2"
             slideToItem={slide}
+            title={"Energiewende Leichtgemacht"}
+            subtitle={"Lorem Ipsum"}
           />
         ),
       },
@@ -141,6 +154,8 @@ const Landing = () => {
             backgroundColor="primary"
             item="item-3"
             slideToItem={slide}
+            title={"Energiewende Leichtgemacht"}
+            subtitle={"Lorem Ipsum"}
           />
         ),
       },
